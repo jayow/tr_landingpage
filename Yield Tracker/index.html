@@ -1,0 +1,1162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TR Yield Tracker — Trading Republic</title>
+<link rel="icon" href="../TR logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ═══════════ VARIABLES ═══════════ */
+:root {
+  --bg: #0a0a0a;
+  --bg-card: #111111;
+  --bg-card-2: #161616;
+  --bg-card-hover: #1a1a1a;
+  --gold: #F9A825;
+  --gold-dim: rgba(249,168,37,0.15);
+  --gold-glow: rgba(249,168,37,0.08);
+  --green: #22c55e;
+  --green-bg: rgba(34,197,94,0.1);
+  --red: #ef4444;
+  --red-bg: rgba(239,68,68,0.1);
+  --white: #ffffff;
+  --text: #e0e0e0;
+  --text-dim: #888888;
+  --border: rgba(255,255,255,0.06);
+  --border-2: rgba(255,255,255,0.12);
+  --radius: 16px;
+  --radius-sm: 10px;
+  --font-display: 'Plus Jakarta Sans', sans-serif;
+  --font-body: 'DM Sans', sans-serif;
+}
+
+/* ═══════════ RESET ═══════════ */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+a { color: var(--gold); text-decoration: none; }
+a:hover { text-decoration: underline; }
+img { display: block; max-width: 100%; }
+input, select, button { font-family: inherit; }
+
+/* ═══════════ LAYOUT ═══════════ */
+.container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+.container-wide { max-width: 1400px; margin: 0 auto; padding: 0 24px; }
+.section { padding: 80px 0; }
+.text-center { text-align: center; }
+.gold { color: var(--gold); }
+.green { color: var(--green); }
+.red { color: var(--red); }
+
+/* ═══════════ TYPOGRAPHY ═══════════ */
+h1, h2, h3, h4 { font-family: var(--font-display); color: var(--white); font-weight: 700; line-height: 1.15; }
+h1 { font-size: clamp(2rem, 4.5vw, 3.2rem); }
+h2 { font-size: clamp(1.6rem, 3vw, 2.4rem); }
+h3 { font-size: 1.2rem; }
+.subtitle { font-size: 1.05rem; color: var(--text-dim); max-width: 600px; margin: 16px auto 0; line-height: 1.7; }
+
+/* ═══════════ NAV ═══════════ */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  padding: 16px 0;
+  background: rgba(10,10,10,0.8);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  transition: padding 0.3s;
+}
+.nav.scrolled { padding: 10px 0; }
+.nav-inner {
+  max-width: 1200px; margin: 0 auto; padding: 0 24px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.nav-brand { display: flex; align-items: center; gap: 12px; }
+.nav-brand img { height: 30px; }
+.nav-brand span {
+  font-family: var(--font-display); font-weight: 700; font-size: 0.85rem;
+  letter-spacing: 3px; color: var(--gold); text-transform: uppercase;
+}
+.nav-links { display: flex; gap: 28px; align-items: center; }
+.nav-links a {
+  color: var(--text-dim); font-size: 0.88rem; font-weight: 500;
+  transition: color 0.2s; text-decoration: none;
+}
+.nav-links a:hover { color: var(--white); }
+.nav-links a.active { color: var(--gold); }
+
+/* ═══════════ HERO ═══════════ */
+.hero {
+  padding: 140px 0 60px;
+  text-align: center;
+  background: radial-gradient(ellipse at 50% 0%, rgba(249,168,37,0.06) 0%, transparent 60%);
+}
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--gold-dim); color: var(--gold);
+  padding: 6px 16px; border-radius: 100px;
+  font-size: 0.8rem; font-weight: 600; letter-spacing: 1px;
+  text-transform: uppercase; margin-bottom: 24px;
+}
+.hero h1 { margin-bottom: 16px; }
+.hero h1 .gold { display: inline; }
+
+/* ═══════════ STATS ROW ═══════════ */
+.stats-row {
+  display: flex; justify-content: center; gap: 48px;
+  margin-top: 48px; flex-wrap: wrap;
+}
+.stat-item { text-align: center; }
+.stat-value {
+  font-family: var(--font-display); font-size: 2rem; font-weight: 800;
+  color: var(--white);
+}
+.stat-label { font-size: 0.78rem; color: var(--text-dim); margin-top: 4px; text-transform: uppercase; letter-spacing: 1px; }
+
+/* ═══════════ FILTERS ═══════════ */
+.filters {
+  display: flex; justify-content: center; gap: 8px;
+  margin-bottom: 32px; flex-wrap: wrap;
+}
+.filter-btn {
+  padding: 8px 20px; border-radius: 100px;
+  border: 1px solid var(--border-2);
+  background: transparent; color: var(--text-dim);
+  font-size: 0.85rem; font-weight: 500; cursor: pointer;
+  transition: all 0.25s;
+}
+.filter-btn:hover { border-color: var(--gold); color: var(--white); }
+.filter-btn.active {
+  background: var(--gold); color: #000; border-color: var(--gold); font-weight: 600;
+}
+
+/* ═══════════ SEARCH ═══════════ */
+.search-bar {
+  display: flex; align-items: center; gap: 12px;
+  max-width: 400px; margin: 0 auto 40px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-2);
+  border-radius: 100px; padding: 10px 20px;
+}
+.search-bar svg { flex-shrink: 0; color: var(--text-dim); }
+.search-bar input {
+  flex: 1; background: none; border: none; outline: none;
+  color: var(--white); font-size: 0.9rem;
+}
+.search-bar input::placeholder { color: var(--text-dim); }
+
+/* ═══════════ TABLE ═══════════ */
+.yield-table-wrap {
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  overflow: visible;
+}
+.yield-table {
+  width: 100%; border-collapse: collapse;
+  table-layout: fixed;
+}
+.yield-table thead th {
+  font-family: var(--font-display);
+  font-size: 0.68rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 1px;
+  color: var(--text-dim); padding: 12px 10px;
+  text-align: left; border-bottom: 1px solid var(--border-2);
+  white-space: nowrap; cursor: pointer;
+  transition: color 0.2s;
+  user-select: none;
+}
+.yield-table thead th:hover { color: var(--gold); }
+.yield-table thead th.sorted { color: var(--gold); }
+.yield-table thead th .sort-arrow { margin-left: 4px; font-size: 0.65rem; }
+.yield-table tbody tr {
+  border-bottom: 1px solid var(--border);
+  transition: background 0.2s;
+}
+.yield-table tbody tr:last-child { border-bottom: none; }
+.yield-table tbody tr:hover { background: var(--bg-card-hover); }
+.yield-table td { padding: 12px 10px; font-size: 0.85rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* Column widths */
+.yield-table th:nth-child(1),
+.yield-table td:nth-child(1) { width: 36px; }
+.yield-table th:nth-child(2),
+.yield-table td:nth-child(2) { width: 22%; }
+.yield-table th:nth-child(3),
+.yield-table td:nth-child(3) { width: 16%; white-space: normal; }
+.yield-table th:nth-child(4),
+.yield-table td:nth-child(4) { width: 13%; }
+.yield-table th:nth-child(5),
+.yield-table td:nth-child(5) { width: 10%; }
+.yield-table th:nth-child(6),
+.yield-table td:nth-child(6) { width: 13%; }
+.yield-table th:nth-child(7),
+.yield-table td:nth-child(7) { width: 10%; }
+.yield-table th:nth-child(8),
+.yield-table td:nth-child(8) { width: 10%; }
+
+.provider-cell {
+  display: flex; align-items: center; gap: 12px;
+}
+.provider-logo {
+  width: 30px; height: 30px; border-radius: 8px;
+  background: var(--bg-card-2); display: flex; align-items: center;
+  justify-content: center; font-weight: 700; font-size: 0.72rem;
+  color: var(--gold); flex-shrink: 0;
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+.provider-logo img { width: 100%; height: 100%; object-fit: cover; }
+.provider-info { display: flex; flex-direction: column; }
+.provider-name { color: var(--white); font-weight: 600; font-size: 0.82rem; }
+.provider-type {
+  font-size: 0.72rem; color: var(--text-dim);
+  text-transform: uppercase; letter-spacing: 0.5px;
+}
+
+.apy-cell {
+  font-family: var(--font-display); font-weight: 700;
+  font-size: 1.1rem; color: var(--gold);
+}
+.trend-up { color: var(--green); }
+.trend-down { color: var(--red); }
+.trend-steady { color: var(--text-dim); }
+.trend-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 4px 10px; border-radius: 100px;
+  font-size: 0.75rem; font-weight: 600;
+}
+.trend-badge.up { background: var(--green-bg); color: var(--green); }
+.trend-badge.down { background: var(--red-bg); color: var(--red); }
+.trend-badge.steady { background: rgba(255,255,255,0.05); color: var(--text-dim); }
+
+.lockup-badge {
+  padding: 3px 8px; border-radius: 100px;
+  font-size: 0.72rem; font-weight: 500;
+  background: rgba(255,255,255,0.05); color: var(--text-dim);
+  white-space: nowrap;
+}
+.lockup-badge.flexible { background: var(--green-bg); color: var(--green); }
+
+.min-deposit { color: var(--text); font-size: 0.88rem; }
+
+/* ═══════════ CALCULATOR ═══════════ */
+.calc-section { padding: 80px 0; }
+.calc-grid {
+  display: grid; grid-template-columns: 1fr 1.3fr; gap: 24px;
+}
+.calc-panel {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 36px;
+}
+.calc-panel h3 {
+  font-size: 1rem; margin-bottom: 28px;
+  text-transform: uppercase; letter-spacing: 2px;
+  color: var(--text-dim);
+}
+
+.calc-field { margin-bottom: 28px; }
+.calc-field label {
+  display: flex; justify-content: space-between; align-items: baseline;
+  font-size: 0.88rem; color: var(--text-dim); margin-bottom: 8px; font-weight: 500;
+}
+.calc-field label .val { color: var(--gold); font-weight: 600; }
+.calc-input {
+  width: 100%; padding: 14px 16px;
+  background: var(--bg); border: 1px solid var(--border-2);
+  border-radius: var(--radius-sm); color: var(--white);
+  font-size: 1.1rem; font-weight: 600;
+  outline: none; transition: border-color 0.2s;
+}
+.calc-input:focus { border-color: var(--gold); }
+.calc-select-wrap {
+  position: relative;
+}
+.calc-select {
+  width: 100%; padding: 14px 16px;
+  background: var(--bg); border: 1px solid var(--border-2);
+  border-radius: var(--radius-sm); color: var(--white);
+  font-size: 1rem; font-weight: 500;
+  outline: none; cursor: pointer;
+  appearance: none; transition: border-color 0.2s;
+}
+.calc-select:focus { border-color: var(--gold); }
+.calc-select-wrap::after {
+  content: '▾'; position: absolute; right: 16px; top: 50%;
+  transform: translateY(-50%); color: var(--text-dim); pointer-events: none;
+}
+
+.calc-slider {
+  width: 100%; margin-top: 12px;
+  -webkit-appearance: none; appearance: none;
+  height: 4px; border-radius: 4px;
+  background: var(--border-2); outline: none;
+}
+.calc-slider::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 18px; height: 18px; border-radius: 50%;
+  background: var(--gold); cursor: pointer;
+  border: 3px solid var(--bg);
+  box-shadow: 0 0 10px rgba(249,168,37,0.4);
+}
+.duration-labels {
+  display: flex; justify-content: space-between;
+  font-size: 0.78rem; color: var(--text-dim); margin-top: 8px;
+}
+
+/* Results panel */
+.result-cards {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+  margin-bottom: 24px;
+}
+.result-card {
+  padding: 20px; border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--bg);
+}
+.result-card.highlight {
+  border-color: var(--gold);
+  background: var(--gold-glow);
+}
+.result-card-label {
+  font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1.5px;
+  color: var(--text-dim); font-weight: 600; margin-bottom: 6px;
+}
+.result-card-value {
+  font-family: var(--font-display); font-size: 1.8rem; font-weight: 800;
+  color: var(--white);
+}
+.result-card.highlight .result-card-value { color: var(--gold); }
+.result-card-sub { font-size: 0.78rem; color: var(--text-dim); margin-top: 2px; }
+
+.breakdown-row {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 1px; background: var(--border);
+  border-radius: var(--radius-sm); overflow: hidden;
+  margin-bottom: 24px;
+}
+.breakdown-item {
+  padding: 16px; text-align: center;
+  background: var(--bg);
+}
+.breakdown-label {
+  font-size: 0.68rem; text-transform: uppercase; letter-spacing: 1px;
+  color: var(--text-dim); font-weight: 600; margin-bottom: 4px;
+}
+.breakdown-value {
+  font-family: var(--font-display); font-size: 1.15rem; font-weight: 700;
+  color: var(--white);
+}
+
+/* Chart */
+.chart-wrap {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 20px;
+  position: relative;
+}
+.chart-canvas { width: 100%; height: 220px; }
+.chart-legend {
+  display: flex; gap: 20px; justify-content: flex-end;
+  margin-bottom: 12px; font-size: 0.78rem; color: var(--text-dim);
+}
+.chart-legend span { display: flex; align-items: center; gap: 6px; }
+.legend-line {
+  width: 20px; height: 3px; border-radius: 2px;
+}
+.legend-line.balance { background: var(--gold); }
+.legend-line.principal { background: var(--text-dim); border: 1px dashed var(--text-dim); height: 0; }
+.chart-note {
+  font-size: 0.72rem; color: var(--text-dim); margin-top: 16px;
+  text-align: center; font-style: italic;
+}
+
+/* ═══════════ TOP YIELDS ═══════════ */
+.top-yields {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+  margin-top: 40px;
+}
+.top-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  transition: border-color 0.3s, transform 0.3s;
+  cursor: default;
+}
+.top-card:hover { border-color: var(--gold); transform: translateY(-4px); }
+.top-card-rank {
+  font-family: var(--font-display); font-size: 0.7rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 2px;
+  color: var(--gold); margin-bottom: 16px;
+}
+.top-card-provider {
+  font-family: var(--font-display); font-size: 1.1rem; font-weight: 700;
+  color: var(--white); margin-bottom: 4px;
+}
+.top-card-type { font-size: 0.78rem; color: var(--text-dim); margin-bottom: 16px; }
+.top-card-apy {
+  font-family: var(--font-display); font-size: 2rem; font-weight: 800;
+  color: var(--gold);
+}
+.top-card-apy span { font-size: 1rem; font-weight: 500; }
+
+/* ═══════════ DATA STATUS ═══════════ */
+.data-status {
+  text-align: center; padding: 20px;
+  font-size: 0.82rem; color: var(--text-dim);
+}
+.data-status a { color: var(--gold); }
+.loading-spinner {
+  width: 40px; height: 40px; border: 3px solid var(--border);
+  border-top-color: var(--gold); border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 40px auto;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.empty-state {
+  text-align: center; padding: 60px 20px; color: var(--text-dim);
+}
+.empty-state svg { margin: 0 auto 16px; opacity: 0.3; }
+
+/* ═══════════ FOOTER ═══════════ */
+.footer {
+  border-top: 1px solid var(--border);
+  padding: 40px 0; text-align: center;
+}
+.footer-brand {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  margin-bottom: 12px;
+}
+.footer-brand img { height: 24px; }
+.footer-brand span {
+  font-family: var(--font-display); font-weight: 700; font-size: 0.75rem;
+  letter-spacing: 3px; color: var(--gold); text-transform: uppercase;
+}
+.footer p { font-size: 0.78rem; color: var(--text-dim); }
+.disclaimer {
+  max-width: 700px; margin: 16px auto 0;
+  font-size: 0.72rem; color: var(--text-dim);
+  line-height: 1.7; opacity: 0.6;
+}
+
+/* ═══════════ SCROLL REVEAL ═══════════ */
+.reveal {
+  opacity: 0; transform: translateY(30px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* ═══════════ RESPONSIVE ═══════════ */
+@media (max-width: 960px) {
+  .calc-grid { grid-template-columns: 1fr; }
+  .top-yields { grid-template-columns: 1fr 1fr; }
+  .stats-row { gap: 32px; }
+}
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  .top-yields { grid-template-columns: 1fr; }
+  .result-cards { grid-template-columns: 1fr; }
+  .breakdown-row { grid-template-columns: repeat(2, 1fr); }
+  .yield-table { font-size: 0.75rem; }
+  .stats-row { gap: 24px; }
+  .stat-value { font-size: 1.5rem; }
+  .hero { padding: 120px 0 40px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════ NAV ═══════════ -->
+<nav class="nav" id="nav">
+  <div class="nav-inner">
+    <a href="../index.html" class="nav-brand">
+      <img src="../TR logo.png" alt="TR">
+      <span>Trading Republic</span>
+    </a>
+    <div class="nav-links">
+      <a href="#yields" class="active">Yields</a>
+      <a href="#calculator">Calculator</a>
+      <a href="../index.html">Main Site</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══════════ HERO ═══════════ -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-badge">Live Rates</div>
+    <h1 class="reveal">Track the Best <span class="gold">Yield Rates</span></h1>
+    <p class="subtitle reveal">Compare APY rates across traditional banks, digital banks, and crypto platforms. Find the highest returns for your money — all in one place.</p>
+
+    <div class="stats-row reveal" id="statsRow">
+      <div class="stat-item">
+        <div class="stat-value" id="statProviders">—</div>
+        <div class="stat-label">Providers</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value" id="statHighest">—</div>
+        <div class="stat-label">Highest APY</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value" id="statAverage">—</div>
+        <div class="stat-label">Average APY</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ TOP 3 ═══════════ -->
+<section class="section" style="padding-top:0">
+  <div class="container">
+    <div class="top-yields reveal" id="topYields">
+      <!-- Populated by JS -->
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ YIELD TABLE ═══════════ -->
+<section class="section" id="yields" style="padding-top:20px">
+  <div class="container-wide">
+    <div class="text-center" style="margin-bottom:40px">
+      <h2 class="reveal">All Yield Rates</h2>
+      <p class="subtitle reveal">Updated from our database. Click column headers to sort.</p>
+    </div>
+
+    <div class="filters reveal" id="filters">
+      <button class="filter-btn active" data-filter="all">All</button>
+      <button class="filter-btn" data-filter="traditional">Traditional Banks</button>
+      <button class="filter-btn" data-filter="digital">Digital Banks</button>
+      <button class="filter-btn" data-filter="crypto">Crypto <span style="font-size:0.65rem; background:var(--gold-dim); color:var(--gold); padding:2px 6px; border-radius:4px; margin-left:4px; font-weight:600; vertical-align:middle;">SOON</span></button>
+    </div>
+
+    <div class="search-bar reveal">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="searchInput" placeholder="Search providers...">
+    </div>
+
+    <div class="yield-table-wrap reveal">
+      <div id="tableLoading" class="loading-spinner"></div>
+      <table class="yield-table" id="yieldTable" style="display:none">
+        <thead>
+          <tr>
+            <th data-sort="rank"># <span class="sort-arrow"></span></th>
+            <th data-sort="provider">Provider <span class="sort-arrow"></span></th>
+            <th data-sort="product">Product <span class="sort-arrow"></span></th>
+            <th data-sort="rateCondition">Condition <span class="sort-arrow"></span></th>
+            <th data-sort="apy">Rate <span class="sort-arrow"></span></th>
+            <th data-sort="validity">Validity <span class="sort-arrow"></span></th>
+            <th data-sort="maxCap">Max Cap <span class="sort-arrow"></span></th>
+            <th data-sort="type">Category <span class="sort-arrow"></span></th>
+          </tr>
+        </thead>
+        <tbody id="tableBody">
+        </tbody>
+      </table>
+      <div id="emptyState" class="empty-state" style="display:none">
+        <p id="emptyMsg">No providers match your search.</p>
+      </div>
+    </div>
+
+    <div class="data-status" id="dataStatus"></div>
+  </div>
+</section>
+
+<!-- ═══════════ CALCULATOR ═══════════ -->
+<section class="calc-section" id="calculator">
+  <div class="container">
+    <div class="text-center" style="margin-bottom:48px">
+      <h2 class="reveal">Yield <span class="gold">Calculator</span></h2>
+      <p class="subtitle reveal">Estimate your future earnings based on current APY rates.</p>
+    </div>
+
+    <div class="calc-grid reveal">
+      <!-- Inputs -->
+      <div class="calc-panel">
+        <h3>Parameters</h3>
+
+        <div class="calc-field">
+          <label>Provider <span class="val" id="calcProviderLabel">—</span></label>
+          <div class="calc-select-wrap">
+            <select class="calc-select" id="calcProvider">
+              <option value="custom">Custom Rate</option>
+            </select>
+          </div>
+          <p class="calc-disclaimer" id="calcDisclaimer" style="display:none; font-size:0.75rem; color:var(--gold); margin-top:8px; line-height:1.5; opacity:0.85;"></p>
+        </div>
+
+        <div class="calc-field">
+          <label>Initial Deposit <span class="val" id="calcDepositLabel">₱10,000</span></label>
+          <input type="number" class="calc-input" id="calcDeposit" value="10000" min="0" step="1000">
+          <input type="range" class="calc-slider" id="calcDepositSlider" min="1000" max="1000000" step="1000" value="10000">
+        </div>
+
+        <div class="calc-field">
+          <label>APY (%) <span class="val" id="calcApyLabel">6%</span></label>
+          <input type="number" class="calc-input" id="calcApy" value="6" min="0" max="100" step="0.1">
+          <input type="range" class="calc-slider" id="calcApySlider" min="0.1" max="30" step="0.1" value="6">
+        </div>
+
+        <div class="calc-field">
+          <label>Duration <span class="val" id="calcDurationLabel">5 Years</span></label>
+          <input type="range" class="calc-slider" id="calcDuration" min="1" max="10" step="1" value="5">
+          <div class="duration-labels"><span>1Y</span><span>5Y</span><span>10Y</span></div>
+        </div>
+      </div>
+
+      <!-- Results -->
+      <div class="calc-panel">
+        <div class="result-cards">
+          <div class="result-card">
+            <div class="result-card-label">Projected Balance</div>
+            <div class="result-card-value" id="resultBalance">—</div>
+            <div class="result-card-sub" id="resultBalanceSub"></div>
+          </div>
+          <div class="result-card highlight">
+            <div class="result-card-label">Total Profit</div>
+            <div class="result-card-value" id="resultProfit">—</div>
+            <div class="result-card-sub">Earnings</div>
+          </div>
+        </div>
+
+        <div class="breakdown-row">
+          <div class="breakdown-item">
+            <div class="breakdown-label">Daily</div>
+            <div class="breakdown-value" id="breakDaily">—</div>
+          </div>
+          <div class="breakdown-item">
+            <div class="breakdown-label">Weekly</div>
+            <div class="breakdown-value" id="breakWeekly">—</div>
+          </div>
+          <div class="breakdown-item">
+            <div class="breakdown-label">Monthly</div>
+            <div class="breakdown-value" id="breakMonthly">—</div>
+          </div>
+          <div class="breakdown-item">
+            <div class="breakdown-label">Annually</div>
+            <div class="breakdown-value" id="breakAnnually">—</div>
+          </div>
+        </div>
+
+        <div class="chart-wrap">
+          <div class="chart-legend">
+            <span><span class="legend-line balance"></span> Total Balance</span>
+            <span><span class="legend-line principal"></span> Principal</span>
+          </div>
+          <canvas class="chart-canvas" id="yieldChart"></canvas>
+        </div>
+        <p class="chart-note">*Breakdown estimates based on Year 1 earnings. Totals based on annual compounding over duration.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ FOOTER ═══════════ -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-brand">
+      <img src="../TR logo.png" alt="TR">
+      <span>Trading Republic</span>
+    </div>
+    <p>TR Yield Tracker — Compare. Calculate. Compound.</p>
+    <p class="disclaimer">Disclaimer: Rates shown are sourced from publicly available data and our internal tracking. They may change without notice. This is not financial advice. Always do your own research before depositing funds with any platform.</p>
+  </div>
+</footer>
+
+<script>
+/* ═══════════════════════════════════════
+   GOOGLE SHEETS INTEGRATION — Sheet2
+   ═══════════════════════════════════════
+   A: Bank Name      B: Product        C: Category
+   D: Currency       E: Rate Type      F: Rate Condition
+   G: Rate           H: Validity       I: Max Cap
+   J: Rate after cap K: Source Link
+   ═══════════════════════════════════════ */
+
+const SHEET_ID = '13VVwpo2BraWlwHojoY-vqQtl2qIXjpUUolFnDBy-5zY';
+const SHEET_NAME = 'Sheet2';
+const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+
+// ═══════════ DATA ═══════════
+let allData = [];
+let filteredData = [];
+let currentSort = { key: 'apy', dir: 'desc' };
+let currentFilter = 'all';
+
+// ═══════════ FETCH FROM GOOGLE SHEETS ═══════════
+function mapCategory(cat) {
+  if (!cat) return 'digital';
+  const c = cat.toLowerCase();
+  if (c.includes('traditional')) return 'traditional';
+  if (c.includes('digital')) return 'digital';
+  if (c.includes('crypto')) return 'crypto';
+  return 'digital';
+}
+
+async function fetchSheetData() {
+  const cacheKey = 'trYieldData2';
+  const cacheTimeKey = 'trYieldData2Time';
+  const cached = localStorage.getItem(cacheKey);
+  const cachedTime = localStorage.getItem(cacheTimeKey);
+
+  if (cached && cachedTime && (Date.now() - parseInt(cachedTime)) < CACHE_DURATION) {
+    return JSON.parse(cached);
+  }
+
+  try {
+    const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(SHEET_NAME)}`;
+    const res = await fetch(url);
+    const text = await res.text();
+    const json = JSON.parse(text.match(/google\.visualization\.Query\.setResponse\((.+)\)/)[1]);
+
+    const rows = json.table.rows;
+    const data = rows.map(row => {
+      const c = row.c;
+      // G (index 6): Rate as decimal (0.035 = 3.5%)
+      let apy = parseFloat(c[6]?.v) || 0;
+      if (apy > 0 && apy < 1) apy = apy * 100;
+      // I (index 8): Max Cap as number
+      const maxCap = parseFloat(c[8]?.v) || 0;
+      // J (index 9): Rate after cap as decimal
+      let rateAfterCap = parseFloat(c[9]?.v) || 0;
+      if (rateAfterCap > 0 && rateAfterCap < 1) rateAfterCap = rateAfterCap * 100;
+
+      return {
+        provider: c[0]?.v || '',
+        product: c[1]?.v || '',
+        type: mapCategory(c[2]?.v),
+        currency: c[3]?.v || 'PHP',
+        rateType: c[4]?.v || '',
+        rateCondition: c[5]?.v || '',
+        apy: Math.round(apy * 100) / 100,
+        validity: c[7]?.v || '',
+        maxCap: maxCap,
+        rateAfterCap: Math.round(rateAfterCap * 100) / 100,
+        link: c[10]?.v || '',
+      };
+    }).filter(d => d.provider);
+
+    localStorage.setItem(cacheKey, JSON.stringify(data));
+    localStorage.setItem(cacheTimeKey, Date.now().toString());
+    return data;
+  } catch (err) {
+    console.error('Failed to fetch sheet data:', err);
+    if (cached) return JSON.parse(cached);
+    return [];
+  }
+}
+
+// ═══════════ LOGO MAPPING ═══════════
+const LOGO_MAP = {
+  'maribank': 'logos/maribank.png',
+  'gotyme': 'logos/gotyme.png',
+  'maya': 'logos/maya.png',
+  'cimb': 'logos/cimb.png',
+  'ownbank': 'logos/ownbank.png',
+  'uno': 'logos/uno.png',
+  'tonik': 'logos/tonik.png',
+  'bpi': 'logos/bpi.png',
+  'metrobank': 'logos/metrobank.png',
+  'rcbc': 'logos/rcbc.png',
+  'security bank': 'logos/securitybank.png',
+  'landbank': 'logos/landbank.png',
+  'bdo': 'logos/bdo.png',
+  'eastwest': 'logos/eastwest.png',
+  'unionbank': 'logos/unionbank.png',
+  'aub': 'logos/aub.png',
+  'china bank': 'logos/chinabank.png',
+  'nexo': 'logos/nexo.png',
+  'crypto.com': 'logos/cryptocom.png',
+  'binance': 'logos/binance.png',
+  'kraken': 'logos/kraken.png',
+  'aave': 'logos/aave.png',
+  'okx': 'logos/okx.png',
+  'youhodler': 'logos/youhodler.png',
+  'bybit': 'logos/bybit.png',
+};
+
+function getLogoPath(providerName) {
+  const name = providerName.toLowerCase();
+  for (const [key, path] of Object.entries(LOGO_MAP)) {
+    if (name.includes(key)) return path;
+  }
+  return null;
+}
+
+// ═══════════ RENDER TABLE ═══════════
+function renderTable(data) {
+  const tbody = document.getElementById('tableBody');
+  const table = document.getElementById('yieldTable');
+  const loading = document.getElementById('tableLoading');
+  const empty = document.getElementById('emptyState');
+
+  loading.style.display = 'none';
+
+  if (data.length === 0) {
+    table.style.display = 'none';
+    empty.style.display = 'block';
+    return;
+  }
+
+  table.style.display = 'table';
+  empty.style.display = 'none';
+
+  tbody.innerHTML = data.map((d, i) => {
+    const initials = d.provider.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
+    const logo = getLogoPath(d.provider);
+    const logoHTML = logo ? `<img src="${logo}" alt="${d.provider}">` : initials;
+    const typeLabel = d.type === 'traditional' ? 'Trad. Bank' : d.type === 'digital' ? 'Digital Bank' : 'Crypto';
+    const providerLink = d.link ? `<a href="${d.link}" target="_blank" class="provider-name">${d.provider}</a>` : `<span class="provider-name">${d.provider}</span>`;
+    const apyDisplay = d.apy > 0 ? `${d.apy.toFixed(2)}%` : '<span style="color:var(--text-dim)">—</span>';
+    const capDisplay = d.maxCap > 0 ? `₱${d.maxCap.toLocaleString()}` : '—';
+    const condClass = d.rateCondition.includes('fixed') ? ' flexible' : '';
+
+    return `<tr>
+      <td style="color:var(--text-dim); font-size:0.78rem;">${i + 1}</td>
+      <td>
+        <div class="provider-cell">
+          <div class="provider-logo">${logoHTML}</div>
+          <div class="provider-info">
+            ${providerLink}
+            <span class="provider-type">${typeLabel}</span>
+          </div>
+        </div>
+      </td>
+      <td style="color:var(--text); font-size:0.82rem;">${d.product || '—'}</td>
+      <td><span class="lockup-badge${condClass}">${d.rateCondition || '—'}</span></td>
+      <td class="apy-cell">${apyDisplay}</td>
+      <td style="color:var(--text-dim); font-size:0.78rem;">${d.validity || '—'}</td>
+      <td style="color:var(--text-dim); font-size:0.78rem;">${capDisplay}</td>
+      <td style="color:var(--text-dim); font-size:0.78rem; text-transform:capitalize;">${d.type}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ═══════════ SORTING ═══════════
+function sortData(data, key, dir) {
+  return [...data].sort((a, b) => {
+    let aVal = a[key], bVal = b[key];
+    if (typeof aVal === 'string') aVal = aVal.toLowerCase();
+    if (typeof bVal === 'string') bVal = bVal.toLowerCase();
+    if (aVal < bVal) return dir === 'asc' ? -1 : 1;
+    if (aVal > bVal) return dir === 'asc' ? 1 : -1;
+    return 0;
+  });
+}
+
+// ═══════════ TOP 3 CARDS ═══════════
+function renderTopCards(data) {
+  const top3 = [...data].filter(d => d.apy > 0).sort((a, b) => b.apy - a.apy).slice(0, 3);
+  const labels = ['Top Yield', '2nd Best', '3rd Best'];
+  document.getElementById('topYields').innerHTML = top3.map((d, i) => {
+    const typeLabel = d.type === 'traditional' ? 'Traditional Bank' : d.type === 'digital' ? 'Digital Bank' : 'Crypto';
+    return `<div class="top-card">
+      <div class="top-card-rank">${labels[i]}</div>
+      <div class="top-card-provider">${d.provider}</div>
+      <div class="top-card-type">${typeLabel} · ${d.product || ''}</div>
+      <div class="top-card-apy">${d.apy.toFixed(2)}% <span>APY</span></div>
+    </div>`;
+  }).join('');
+}
+
+// ═══════════ STATS ═══════════
+function updateStats(data) {
+  document.getElementById('statProviders').textContent = data.length;
+  const withRate = data.filter(d => d.apy > 0);
+  if (withRate.length) {
+    const max = Math.max(...withRate.map(d => d.apy));
+    const avg = (withRate.reduce((s, d) => s + d.apy, 0) / withRate.length);
+    document.getElementById('statHighest').textContent = max.toFixed(2) + '%';
+    document.getElementById('statAverage').textContent = avg.toFixed(2) + '%';
+  }
+}
+
+// ═══════════ POPULATE CALCULATOR SELECT ═══════════
+let calcProviderMeta = {}; // store metadata for disclaimer display
+
+function populateCalcProviders(data) {
+  const sel = document.getElementById('calcProvider');
+  const sorted = [...data].filter(d => d.apy > 0).sort((a, b) => b.apy - a.apy);
+  sorted.forEach((d, idx) => {
+    const opt = document.createElement('option');
+    const key = 'p' + idx;
+    opt.value = key;
+    const isVariable = d.rateCondition && d.rateCondition.toLowerCase().includes('variable');
+    const label = isVariable
+      ? `${d.provider} (${d.product}) — up to ${d.apy}%`
+      : `${d.provider} ${d.product ? '(' + d.product + ')' : ''} — ${d.apy}%`;
+    opt.textContent = label;
+    sel.appendChild(opt);
+    calcProviderMeta[key] = {
+      apy: d.apy,
+      isVariable: isVariable,
+      condition: d.rateCondition || '',
+      provider: d.provider,
+      product: d.product,
+      validity: d.validity || '',
+    };
+  });
+}
+
+// ═══════════ CALCULATOR ═══════════
+function formatNum(n) {
+  if (n >= 1000000) return (n / 1000000).toFixed(2) + 'M';
+  if (n >= 100000) return (n / 1000).toFixed(1) + 'K';
+  return n.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+function updateCalc() {
+  const deposit = parseFloat(document.getElementById('calcDeposit').value) || 0;
+  const apy = parseFloat(document.getElementById('calcApy').value) || 0;
+  const years = parseInt(document.getElementById('calcDuration').value) || 1;
+  const rate = apy / 100;
+
+  const balance = deposit * Math.pow(1 + rate, years);
+  const profit = balance - deposit;
+  const yearOneEarning = deposit * rate;
+
+  document.getElementById('resultBalance').textContent = formatNum(balance);
+  document.getElementById('resultBalanceSub').textContent = `After ${years} Year${years > 1 ? 's' : ''}`;
+  document.getElementById('resultProfit').textContent = '+' + formatNum(profit);
+
+  document.getElementById('breakDaily').textContent = formatNum(yearOneEarning / 365);
+  document.getElementById('breakWeekly').textContent = formatNum(yearOneEarning / 52);
+  document.getElementById('breakMonthly').textContent = formatNum(yearOneEarning / 12);
+  document.getElementById('breakAnnually').textContent = formatNum(yearOneEarning);
+
+  document.getElementById('calcDepositLabel').textContent = '₱' + deposit.toLocaleString();
+  document.getElementById('calcApyLabel').textContent = apy + '%';
+  document.getElementById('calcDurationLabel').textContent = years + ' Year' + (years > 1 ? 's' : '');
+
+  drawChart(deposit, rate, years);
+}
+
+// ═══════════ CHART ═══════════
+function drawChart(deposit, rate, years) {
+  const canvas = document.getElementById('yieldChart');
+  const ctx = canvas.getContext('2d');
+  const dpr = window.devicePixelRatio || 1;
+  const rect = canvas.getBoundingClientRect();
+  canvas.width = rect.width * dpr;
+  canvas.height = rect.height * dpr;
+  ctx.scale(dpr, dpr);
+  const W = rect.width, H = rect.height;
+
+  ctx.clearRect(0, 0, W, H);
+
+  // Data points
+  const points = [];
+  for (let y = 0; y <= years; y++) {
+    points.push({ year: y, balance: deposit * Math.pow(1 + rate, y) });
+  }
+
+  const maxVal = Math.max(...points.map(p => p.balance)) * 1.1;
+  const minVal = 0;
+  const padL = 50, padR = 20, padT = 10, padB = 30;
+  const chartW = W - padL - padR;
+  const chartH = H - padT - padB;
+
+  const toX = (i) => padL + (i / years) * chartW;
+  const toY = (v) => padT + chartH - ((v - minVal) / (maxVal - minVal)) * chartH;
+
+  // Grid lines
+  ctx.strokeStyle = 'rgba(255,255,255,0.05)';
+  ctx.lineWidth = 1;
+  const gridLines = 5;
+  for (let i = 0; i <= gridLines; i++) {
+    const y = padT + (i / gridLines) * chartH;
+    ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(W - padR, y); ctx.stroke();
+    const val = maxVal - (i / gridLines) * (maxVal - minVal);
+    ctx.fillStyle = '#666';
+    ctx.font = '11px Inter';
+    ctx.textAlign = 'right';
+    ctx.fillText(formatNum(val), padL - 8, y + 4);
+  }
+
+  // X labels
+  ctx.textAlign = 'center';
+  ctx.fillStyle = '#666';
+  for (let i = 0; i <= years; i++) {
+    ctx.fillText('Year ' + i, toX(i), H - 6);
+  }
+
+  // Principal line (dashed)
+  ctx.setLineDash([6, 4]);
+  ctx.strokeStyle = 'rgba(255,255,255,0.2)';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(toX(0), toY(deposit));
+  ctx.lineTo(toX(years), toY(deposit));
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Balance area fill
+  const grad = ctx.createLinearGradient(0, toY(maxVal), 0, toY(0));
+  grad.addColorStop(0, 'rgba(249,168,37,0.25)');
+  grad.addColorStop(1, 'rgba(249,168,37,0)');
+  ctx.fillStyle = grad;
+  ctx.beginPath();
+  ctx.moveTo(toX(0), toY(points[0].balance));
+  points.forEach((p, i) => ctx.lineTo(toX(i), toY(p.balance)));
+  ctx.lineTo(toX(years), toY(0));
+  ctx.lineTo(toX(0), toY(0));
+  ctx.closePath();
+  ctx.fill();
+
+  // Balance line
+  ctx.strokeStyle = '#F9A825';
+  ctx.lineWidth = 3;
+  ctx.lineJoin = 'round';
+  ctx.beginPath();
+  points.forEach((p, i) => {
+    if (i === 0) ctx.moveTo(toX(i), toY(p.balance));
+    else ctx.lineTo(toX(i), toY(p.balance));
+  });
+  ctx.stroke();
+
+  // Dots
+  points.forEach((p, i) => {
+    ctx.beginPath();
+    ctx.arc(toX(i), toY(p.balance), 5, 0, Math.PI * 2);
+    ctx.fillStyle = '#F9A825';
+    ctx.fill();
+    ctx.strokeStyle = '#0a0a0a';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+  });
+}
+
+// ═══════════ FILTER & SEARCH ═══════════
+function applyFilterAndSearch() {
+  const emptyMsg = document.getElementById('emptyMsg');
+  if (currentFilter === 'crypto') {
+    document.getElementById('yieldTable').style.display = 'none';
+    document.getElementById('emptyState').style.display = 'block';
+    emptyMsg.innerHTML = '<span style="color:var(--gold); font-weight:600; font-size:1.1rem;">Coming Soon</span><br><span style="color:var(--text-dim); font-size:0.9rem;">We\'re gathering crypto yield data. Stay tuned!</span>';
+    return;
+  }
+  emptyMsg.textContent = 'No providers match your search.';
+  const search = document.getElementById('searchInput').value.toLowerCase();
+  filteredData = allData.filter(d => {
+    const matchFilter = currentFilter === 'all' || d.type === currentFilter;
+    const matchSearch = !search || d.provider.toLowerCase().includes(search) || (d.product && d.product.toLowerCase().includes(search));
+    return matchFilter && matchSearch;
+  });
+  filteredData = sortData(filteredData, currentSort.key, currentSort.dir);
+  renderTable(filteredData);
+}
+
+// ═══════════ EVENT LISTENERS ═══════════
+function setupEvents() {
+  // Filters
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentFilter = btn.dataset.filter;
+      applyFilterAndSearch();
+    });
+  });
+
+  // Search
+  document.getElementById('searchInput').addEventListener('input', applyFilterAndSearch);
+
+  // Sort
+  document.querySelectorAll('.yield-table thead th[data-sort]').forEach(th => {
+    th.addEventListener('click', () => {
+      const key = th.dataset.sort;
+      if (currentSort.key === key) {
+        currentSort.dir = currentSort.dir === 'asc' ? 'desc' : 'asc';
+      } else {
+        currentSort = { key, dir: key === 'apy' ? 'desc' : 'asc' };
+      }
+      document.querySelectorAll('.yield-table thead th').forEach(t => t.classList.remove('sorted'));
+      th.classList.add('sorted');
+      th.querySelector('.sort-arrow').textContent = currentSort.dir === 'asc' ? '↑' : '↓';
+      applyFilterAndSearch();
+    });
+  });
+
+  // Calculator inputs
+  const calcDeposit = document.getElementById('calcDeposit');
+  const calcDepositSlider = document.getElementById('calcDepositSlider');
+  const calcApy = document.getElementById('calcApy');
+  const calcApySlider = document.getElementById('calcApySlider');
+  const calcDuration = document.getElementById('calcDuration');
+  const calcProvider = document.getElementById('calcProvider');
+
+  calcDeposit.addEventListener('input', () => { calcDepositSlider.value = calcDeposit.value; updateCalc(); });
+  calcDepositSlider.addEventListener('input', () => { calcDeposit.value = calcDepositSlider.value; updateCalc(); });
+  calcApy.addEventListener('input', () => { calcApySlider.value = calcApy.value; updateCalc(); });
+  calcApySlider.addEventListener('input', () => { calcApy.value = calcApySlider.value; updateCalc(); });
+  calcDuration.addEventListener('input', updateCalc);
+  calcProvider.addEventListener('change', () => {
+    const disclaimer = document.getElementById('calcDisclaimer');
+    if (calcProvider.value !== 'custom' && calcProviderMeta[calcProvider.value]) {
+      const meta = calcProviderMeta[calcProvider.value];
+      calcApy.value = meta.apy;
+      calcApySlider.value = meta.apy;
+      document.getElementById('calcProviderLabel').textContent = `${meta.provider} (${meta.product})`;
+      if (meta.isVariable) {
+        disclaimer.textContent = `⚠ Variable rate — up to ${meta.apy}% (${meta.condition}). Actual rate may be lower depending on conditions${meta.validity ? ' · ' + meta.validity : ''}.`;
+        disclaimer.style.display = 'block';
+      } else {
+        disclaimer.style.display = 'none';
+      }
+    } else {
+      document.getElementById('calcProviderLabel').textContent = 'Custom';
+      disclaimer.style.display = 'none';
+    }
+    updateCalc();
+  });
+
+  // Nav scroll
+  window.addEventListener('scroll', () => {
+    document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 50);
+  });
+
+  // Chart resize
+  window.addEventListener('resize', updateCalc);
+}
+
+// ═══════════ SCROLL REVEAL ═══════════
+function setupReveals() {
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+}
+
+// ═══════════ INIT ═══════════
+async function init() {
+  setupEvents();
+  setupReveals();
+
+  const sheetData = await fetchSheetData();
+  allData = sheetData;
+  filteredData = sortData(allData, 'apy', 'desc');
+
+  renderTable(filteredData);
+  renderTopCards(allData);
+  updateStats(allData);
+  populateCalcProviders(allData);
+  updateCalc();
+
+  // Data status
+  const statusEl = document.getElementById('dataStatus');
+  statusEl.innerHTML = '';
+}
+
+init();
+</script>
+</body>
+</html>
