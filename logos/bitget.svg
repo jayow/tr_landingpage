@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 60" width="200" height="60">
+  <defs>
+    <style>
+      .wordmark { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-weight: 700; font-size: 32px; fill: #ffffff; letter-spacing: -0.5px; }
+    </style>
+  </defs>
+  <!-- Bitget icon mark - stylized shield/arrow -->
+  <g transform="translate(12, 12)">
+    <path d="M0 18L9 0h18l-9 18h-9l9 18H0l9-18H0z" fill="#00F0FF" opacity="0.9"/>
+    <path d="M9 18l9-18h9l-9 18 9 18h-9l-9-18z" fill="#ffffff" opacity="0.85"/>
+  </g>
+  <text x="52" y="39" class="wordmark">Bitget</text>
+</svg>

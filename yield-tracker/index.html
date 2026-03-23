@@ -186,19 +186,21 @@ h3 { font-size: 1.2rem; }
 .yield-table th:nth-child(1),
 .yield-table td:nth-child(1) { width: 36px; }
 .yield-table th:nth-child(2),
-.yield-table td:nth-child(2) { width: 22%; }
+.yield-table td:nth-child(2) { width: 18%; }
 .yield-table th:nth-child(3),
-.yield-table td:nth-child(3) { width: 16%; white-space: normal; }
+.yield-table td:nth-child(3) { width: 12%; white-space: normal; }
 .yield-table th:nth-child(4),
-.yield-table td:nth-child(4) { width: 13%; }
+.yield-table td:nth-child(4) { width: 10%; }
 .yield-table th:nth-child(5),
-.yield-table td:nth-child(5) { width: 10%; }
+.yield-table td:nth-child(5) { width: 9%; }
 .yield-table th:nth-child(6),
-.yield-table td:nth-child(6) { width: 13%; }
+.yield-table td:nth-child(6) { width: 11%; }
 .yield-table th:nth-child(7),
-.yield-table td:nth-child(7) { width: 10%; }
+.yield-table td:nth-child(7) { width: 14%; white-space: normal; overflow: visible; text-overflow: unset; font-size: 0.75rem; }
 .yield-table th:nth-child(8),
-.yield-table td:nth-child(8) { width: 10%; }
+.yield-table td:nth-child(8) { width: 9%; }
+.yield-table th:nth-child(9),
+.yield-table td:nth-child(9) { width: 7%; text-align: center; }
 
 .provider-cell {
   display: flex; align-items: center; gap: 12px;
@@ -276,22 +278,44 @@ h3 { font-size: 1.2rem; }
   outline: none; transition: border-color 0.2s;
 }
 .calc-input:focus { border-color: var(--gold); }
-.calc-select-wrap {
-  position: relative;
-}
-.calc-select {
+.calc-dropdown { position: relative; }
+.calc-dropdown-selected {
   width: 100%; padding: 14px 16px;
   background: var(--bg); border: 1px solid var(--border-2);
   border-radius: var(--radius-sm); color: var(--white);
-  font-size: 1rem; font-weight: 500;
-  outline: none; cursor: pointer;
-  appearance: none; transition: border-color 0.2s;
+  font-size: 0.9rem; font-weight: 500;
+  cursor: pointer; transition: border-color 0.2s;
 }
-.calc-select:focus { border-color: var(--gold); }
-.calc-select-wrap::after {
-  content: '▾'; position: absolute; right: 16px; top: 50%;
-  transform: translateY(-50%); color: var(--text-dim); pointer-events: none;
+.calc-dropdown-selected::after {
+  content: '▾'; float: right; color: var(--text-dim);
 }
+.calc-dropdown-selected:hover, .calc-dropdown.open .calc-dropdown-selected {
+  border-color: var(--gold);
+}
+.calc-dropdown-menu {
+  position: absolute; top: 100%; left: 0; right: 0;
+  background: var(--bg-card); border: 1px solid var(--border-2);
+  border-radius: var(--radius-sm); margin-top: 4px;
+  z-index: 100; max-height: 300px; display: flex; flex-direction: column;
+}
+.calc-dropdown-search {
+  width: 100%; padding: 10px 14px; border: none;
+  border-bottom: 1px solid var(--border-2);
+  background: transparent; color: var(--white);
+  font-size: 0.85rem; outline: none;
+  box-sizing: border-box;
+}
+.calc-dropdown-search::placeholder { color: var(--text-dim); }
+.calc-dropdown-list {
+  overflow-y: auto; max-height: 240px;
+}
+.calc-dropdown-item {
+  padding: 10px 14px; cursor: pointer;
+  font-size: 0.82rem; color: var(--text);
+  transition: background 0.15s;
+}
+.calc-dropdown-item:hover { background: var(--bg-card-2); color: var(--white); }
+.calc-dropdown-item.active { color: var(--gold); }
 
 .calc-slider {
   width: 100%; margin-top: 12px;
@@ -557,6 +581,7 @@ h3 { font-size: 1.2rem; }
             <th data-sort="validity">Validity <span class="sort-arrow"></span></th>
             <th data-sort="maxCap">Max Cap <span class="sort-arrow"></span></th>
             <th data-sort="type">Category <span class="sort-arrow"></span></th>
+            <th>Details</th>
           </tr>
         </thead>
         <tbody id="tableBody">
@@ -586,18 +611,21 @@ h3 { font-size: 1.2rem; }
 
         <div class="calc-field">
           <label>Provider <span class="val" id="calcProviderLabel">—</span></label>
-          <div class="calc-select-wrap">
-            <select class="calc-select" id="calcProvider">
-              <option value="custom">Custom Rate</option>
-            </select>
+          <div class="calc-dropdown" id="calcDropdown">
+            <div class="calc-dropdown-selected" id="calcDropdownBtn">Custom Rate</div>
+            <div class="calc-dropdown-menu" id="calcDropdownMenu" style="display:none">
+              <input type="text" class="calc-dropdown-search" id="calcProviderSearch" placeholder="Search providers...">
+              <div class="calc-dropdown-list" id="calcProviderList"></div>
+            </div>
           </div>
+          <input type="hidden" id="calcProvider" value="custom">
           <p class="calc-disclaimer" id="calcDisclaimer" style="display:none; font-size:0.75rem; color:var(--gold); margin-top:8px; line-height:1.5; opacity:0.85;"></p>
         </div>
 
         <div class="calc-field">
           <label>Initial Deposit <span class="val" id="calcDepositLabel">₱10,000</span></label>
           <input type="number" class="calc-input" id="calcDeposit" value="10000" min="0" step="1000">
-          <input type="range" class="calc-slider" id="calcDepositSlider" min="1000" max="1000000" step="1000" value="10000">
+          <input type="range" class="calc-slider" id="calcDepositSlider" min="1000" max="10000000" step="1000" value="10000">
         </div>
 
         <div class="calc-field">
@@ -669,6 +697,7 @@ h3 { font-size: 1.2rem; }
     </div>
     <p>TR Yield Tracker — Compare. Calculate. Compound.</p>
     <p class="disclaimer">Disclaimer: Rates shown are sourced from publicly available data and our internal tracking. They may change without notice. This is not financial advice. Always do your own research before depositing funds with any platform.</p>
+    <p style="margin-top:16px;font-size:0.72rem;color:var(--text-dim)">Created by <a href="https://x.com/jayowtrades" target="_blank" style="color:var(--gold);text-decoration:none;font-weight:500">jayowtrades</a></p>
   </div>
 </footer>
 
@@ -683,7 +712,7 @@ h3 { font-size: 1.2rem; }
    ═══════════════════════════════════════ */
 
 const SHEET_ID = '13VVwpo2BraWlwHojoY-vqQtl2qIXjpUUolFnDBy-5zY';
-const SHEET_NAME = 'Sheet2';
+const SHEET_NAME = 'Sheet1';
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 
 // ═══════════ DATA ═══════════
@@ -703,8 +732,8 @@ function mapCategory(cat) {
 }
 
 async function fetchSheetData() {
-  const cacheKey = 'trYieldData2';
-  const cacheTimeKey = 'trYieldData2Time';
+  const cacheKey = 'trYieldData8';
+  const cacheTimeKey = 'trYieldData8Time';
   const cached = localStorage.getItem(cacheKey);
   const cachedTime = localStorage.getItem(cacheTimeKey);
 
@@ -713,7 +742,7 @@ async function fetchSheetData() {
   }
 
   try {
-    const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(SHEET_NAME)}`;
+    const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(SHEET_NAME)}&headers=1`;
     const res = await fetch(url);
     const text = await res.text();
     const json = JSON.parse(text.match(/google\.visualization\.Query\.setResponse\((.+)\)/)[1]);
@@ -835,8 +864,9 @@ function renderTable(data) {
       <td><span class="lockup-badge${condClass}">${d.rateCondition || '—'}</span></td>
       <td class="apy-cell">${apyDisplay}</td>
       <td style="color:var(--text-dim); font-size:0.78rem;">${d.validity || '—'}</td>
-      <td style="color:var(--text-dim); font-size:0.78rem;">${capDisplay}</td>
+      <td style="color:var(--text-dim); font-size:0.75rem; white-space:normal; overflow:visible;">${capDisplay}</td>
       <td style="color:var(--text-dim); font-size:0.78rem; text-transform:capitalize;">${d.type}</td>
+      <td>${d.link ? `<a href="${d.link}" target="_blank" style="color:var(--gold); font-size:0.75rem; text-decoration:none;">View ↗</a>` : '—'}</td>
     </tr>`;
   }).join('');
 }
@@ -845,8 +875,11 @@ function renderTable(data) {
 function sortData(data, key, dir) {
   return [...data].sort((a, b) => {
     let aVal = a[key], bVal = b[key];
-    if (typeof aVal === 'string') aVal = aVal.toLowerCase();
-    if (typeof bVal === 'string') bVal = bVal.toLowerCase();
+    // For numeric columns, ensure numeric comparison
+    if (key === 'apy' || key === 'maxCap') { aVal = Number(aVal) || 0; bVal = Number(bVal) || 0; }
+    else if (typeof aVal === 'string') {
+      aVal = aVal.toLowerCase(); bVal = (bVal || '').toString().toLowerCase();
+    }
     if (aVal < bVal) return dir === 'asc' ? -1 : 1;
     if (aVal > bVal) return dir === 'asc' ? 1 : -1;
     return 0;
@@ -883,19 +916,18 @@ function updateStats(data) {
 // ═══════════ POPULATE CALCULATOR SELECT ═══════════
 let calcProviderMeta = {}; // store metadata for disclaimer display
 
+let calcProviderItems = [];
+
 function populateCalcProviders(data) {
-  const sel = document.getElementById('calcProvider');
-  const sorted = [...data].filter(d => d.apy > 0).sort((a, b) => b.apy - a.apy);
+  const sorted = [...data].filter(d => d.apy > 0).sort((a, b) => a.provider.localeCompare(b.provider) || a.product.localeCompare(b.product));
+  calcProviderItems = [{key: 'custom', label: 'Custom Rate'}];
   sorted.forEach((d, idx) => {
-    const opt = document.createElement('option');
     const key = 'p' + idx;
-    opt.value = key;
     const isVariable = d.rateCondition && d.rateCondition.toLowerCase().includes('variable');
     const label = isVariable
       ? `${d.provider} (${d.product}) — up to ${d.apy}%`
       : `${d.provider} ${d.product ? '(' + d.product + ')' : ''} — ${d.apy}%`;
-    opt.textContent = label;
-    sel.appendChild(opt);
+    calcProviderItems.push({key, label});
     calcProviderMeta[key] = {
       apy: d.apy,
       isVariable: isVariable,
@@ -903,8 +935,20 @@ function populateCalcProviders(data) {
       provider: d.provider,
       product: d.product,
       validity: d.validity || '',
+      maxCap: d.maxCap > 0 ? d.maxCap : 0,
+      rateAfterCap: d.rateAfterCap || 0,
     };
   });
+  renderCalcDropdown('');
+}
+
+function renderCalcDropdown(filter) {
+  const list = document.getElementById('calcProviderList');
+  const f = filter.toLowerCase();
+  const items = calcProviderItems.filter(i => i.label.toLowerCase().includes(f));
+  list.innerHTML = items.map(i =>
+    `<div class="calc-dropdown-item${document.getElementById('calcProvider').value === i.key ? ' active' : ''}" data-key="${i.key}">${i.label}</div>`
+  ).join('');
 }
 
 // ═══════════ CALCULATOR ═══════════
@@ -920,18 +964,33 @@ function updateCalc() {
   const years = parseInt(document.getElementById('calcDuration').value) || 1;
   const rate = apy / 100;
 
-  const balance = deposit * Math.pow(1 + rate, years);
+  // Check if selected provider has a max cap
+  const provKey = document.getElementById('calcProvider').value;
+  const meta = calcProviderMeta[provKey];
+  const maxCap = meta ? meta.maxCap : 0;
+  const rateAfterCap = meta ? meta.rateAfterCap / 100 : 0;
+
+  let balance, yearOneEarning;
+  if (maxCap > 0 && deposit > maxCap) {
+    // Split: amount up to cap earns main rate, excess earns rate after cap
+    const cappedBal = maxCap * Math.pow(1 + rate, years);
+    const excessBal = (deposit - maxCap) * Math.pow(1 + rateAfterCap, years);
+    balance = cappedBal + excessBal;
+    yearOneEarning = (maxCap * rate) + ((deposit - maxCap) * rateAfterCap);
+  } else {
+    balance = deposit * Math.pow(1 + rate, years);
+    yearOneEarning = deposit * rate;
+  }
   const profit = balance - deposit;
-  const yearOneEarning = deposit * rate;
 
-  document.getElementById('resultBalance').textContent = formatNum(balance);
+  document.getElementById('resultBalance').textContent = '₱' + formatNum(balance);
   document.getElementById('resultBalanceSub').textContent = `After ${years} Year${years > 1 ? 's' : ''}`;
-  document.getElementById('resultProfit').textContent = '+' + formatNum(profit);
+  document.getElementById('resultProfit').textContent = '+₱' + formatNum(profit);
 
-  document.getElementById('breakDaily').textContent = formatNum(yearOneEarning / 365);
-  document.getElementById('breakWeekly').textContent = formatNum(yearOneEarning / 52);
-  document.getElementById('breakMonthly').textContent = formatNum(yearOneEarning / 12);
-  document.getElementById('breakAnnually').textContent = formatNum(yearOneEarning);
+  document.getElementById('breakDaily').textContent = '₱' + formatNum(yearOneEarning / 365);
+  document.getElementById('breakWeekly').textContent = '₱' + formatNum(yearOneEarning / 52);
+  document.getElementById('breakMonthly').textContent = '₱' + formatNum(yearOneEarning / 12);
+  document.getElementById('breakAnnually').textContent = '₱' + formatNum(yearOneEarning);
 
   document.getElementById('calcDepositLabel').textContent = '₱' + deposit.toLocaleString();
   document.getElementById('calcApyLabel').textContent = apy + '%';
@@ -977,7 +1036,7 @@ function drawChart(deposit, rate, years) {
     ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(W - padR, y); ctx.stroke();
     const val = maxVal - (i / gridLines) * (maxVal - minVal);
     ctx.fillStyle = '#666';
-    ctx.font = '11px Inter';
+    ctx.font = "11px 'DM Sans'";
     ctx.textAlign = 'right';
     ctx.fillText(formatNum(val), padL - 8, y + 4);
   }
@@ -1033,7 +1092,42 @@ function drawChart(deposit, rate, years) {
     ctx.lineWidth = 2;
     ctx.stroke();
   });
+
+  // Store for hover
+  canvas._chartPoints = points.map((p, i) => ({ x: toX(i), y: toY(p.balance), balance: p.balance, year: p.year }));
 }
+
+// ═══════════ CHART TOOLTIP ═══════════
+(function() {
+  const canvas = document.getElementById('yieldChart');
+  const tooltip = document.createElement('div');
+  tooltip.style.cssText = "position:absolute;background:rgba(0,0,0,0.9);border:1px solid #F9A825;color:#fff;padding:10px 16px;border-radius:8px;font-size:0.9rem;font-family:'DM Sans';pointer-events:none;display:none;z-index:50;white-space:nowrap;";
+  canvas.parentElement.style.position = 'relative';
+  canvas.parentElement.appendChild(tooltip);
+
+  canvas.addEventListener('mousemove', (e) => {
+    if (!canvas._chartPoints) return;
+    const rect = canvas.getBoundingClientRect();
+    const mx = e.clientX - rect.left;
+    const my = e.clientY - rect.top;
+    let hit = null;
+    for (const pt of canvas._chartPoints) {
+      const dx = mx - pt.x, dy = my - pt.y;
+      if (dx * dx + dy * dy < 400) { hit = pt; break; }
+    }
+    if (hit) {
+      tooltip.textContent = `Year ${hit.year}: ₱${formatNum(hit.balance)}`;
+      tooltip.style.display = 'block';
+      tooltip.style.left = (hit.x - tooltip.offsetWidth / 2) + 'px';
+      tooltip.style.top = (hit.y - 36) + 'px';
+      canvas.style.cursor = 'pointer';
+    } else {
+      tooltip.style.display = 'none';
+      canvas.style.cursor = 'default';
+    }
+  });
+  canvas.addEventListener('mouseleave', () => { tooltip.style.display = 'none'; });
+})();
 
 // ═══════════ FILTER & SEARCH ═══════════
 function applyFilterAndSearch() {
@@ -1092,31 +1186,71 @@ function setupEvents() {
   const calcApy = document.getElementById('calcApy');
   const calcApySlider = document.getElementById('calcApySlider');
   const calcDuration = document.getElementById('calcDuration');
-  const calcProvider = document.getElementById('calcProvider');
 
   calcDeposit.addEventListener('input', () => { calcDepositSlider.value = calcDeposit.value; updateCalc(); });
   calcDepositSlider.addEventListener('input', () => { calcDeposit.value = calcDepositSlider.value; updateCalc(); });
   calcApy.addEventListener('input', () => { calcApySlider.value = calcApy.value; updateCalc(); });
   calcApySlider.addEventListener('input', () => { calcApy.value = calcApySlider.value; updateCalc(); });
   calcDuration.addEventListener('input', updateCalc);
-  calcProvider.addEventListener('change', () => {
+
+  // Custom searchable dropdown
+  const ddBtn = document.getElementById('calcDropdownBtn');
+  const ddMenu = document.getElementById('calcDropdownMenu');
+  const ddSearch = document.getElementById('calcProviderSearch');
+  const ddList = document.getElementById('calcProviderList');
+  const calcProvider = document.getElementById('calcProvider');
+
+  ddBtn.addEventListener('click', () => {
+    const open = ddMenu.style.display === 'none';
+    ddMenu.style.display = open ? 'flex' : 'none';
+    document.getElementById('calcDropdown').classList.toggle('open', open);
+    if (open) { ddSearch.value = ''; renderCalcDropdown(''); ddSearch.focus(); }
+  });
+
+  ddSearch.addEventListener('input', () => renderCalcDropdown(ddSearch.value));
+
+  ddList.addEventListener('click', (e) => {
+    const item = e.target.closest('.calc-dropdown-item');
+    if (!item) return;
+    const key = item.dataset.key;
+    calcProvider.value = key;
+    ddMenu.style.display = 'none';
+    document.getElementById('calcDropdown').classList.remove('open');
+
     const disclaimer = document.getElementById('calcDisclaimer');
-    if (calcProvider.value !== 'custom' && calcProviderMeta[calcProvider.value]) {
-      const meta = calcProviderMeta[calcProvider.value];
+    if (key !== 'custom' && calcProviderMeta[key]) {
+      const meta = calcProviderMeta[key];
+      ddBtn.textContent = `${meta.provider} (${meta.product}) — ${meta.apy}%`;
       calcApy.value = meta.apy;
       calcApySlider.value = meta.apy;
       document.getElementById('calcProviderLabel').textContent = `${meta.provider} (${meta.product})`;
+      const warnings = [];
       if (meta.isVariable) {
-        disclaimer.textContent = `⚠ Variable rate — up to ${meta.apy}% (${meta.condition}). Actual rate may be lower depending on conditions${meta.validity ? ' · ' + meta.validity : ''}.`;
+        warnings.push(`⚠ Variable rate — up to ${meta.apy}% (${meta.condition}). Actual rate may be lower depending on conditions${meta.validity ? ' · ' + meta.validity : ''}.`);
+      }
+      if (meta.maxCap > 0) {
+        warnings.push(`⚠ Max cap: ₱${meta.maxCap.toLocaleString()}. Deposits above this earn ${meta.rateAfterCap > 0 ? meta.rateAfterCap.toFixed(2) + '%' : 'a lower rate'}.`);
+      }
+      if (warnings.length) {
+        disclaimer.textContent = warnings.join(' ');
         disclaimer.style.display = 'block';
       } else {
         disclaimer.style.display = 'none';
       }
     } else {
+      ddBtn.textContent = 'Custom Rate';
       document.getElementById('calcProviderLabel').textContent = 'Custom';
       disclaimer.style.display = 'none';
     }
     updateCalc();
+  });
+
+  // Close dropdown when clicking outside
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('#calcDropdown')) {
+      ddMenu.style.display = 'none';
+      document.getElementById('calcDropdown').classList.remove('open');
+    }
   });
 
   // Nav scroll

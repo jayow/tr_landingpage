@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 60" width="200" height="60">
+  <defs>
+    <style>
+      .wordmark { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-weight: 700; font-size: 34px; fill: #ffffff; letter-spacing: 1px; }
+    </style>
+  </defs>
+  <!-- MEXC stylized M icon -->
+  <g transform="translate(10, 10)">
+    <path d="M0 40V0l10 20L20 0l10 20L40 0v40h-8V18l-8 16h-8L8 18v22H0z" fill="#2EBD85" opacity="0.95"/>
+  </g>
+  <text x="60" y="41" class="wordmark">MEXC</text>
+</svg>

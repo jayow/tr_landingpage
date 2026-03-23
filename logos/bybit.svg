@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 60" width="200" height="60">
+  <defs>
+    <style>
+      .wordmark { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-weight: 700; font-size: 34px; fill: #ffffff; letter-spacing: 0.5px; }
+    </style>
+  </defs>
+  <!-- Bybit diamond/arrow icon -->
+  <g transform="translate(12, 8)">
+    <path d="M20 0L40 22L20 44L0 22Z" fill="#F7A600" opacity="0.95"/>
+    <path d="M20 8L32 22L20 36L8 22Z" fill="#000000" opacity="0.3"/>
+  </g>
+  <text x="56" y="40" class="wordmark">Bybit</text>
+</svg>

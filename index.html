@@ -6,13 +6,13 @@
   <title>The Trading Republic by ZFT</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
     :root {
-      --font-display: 'Poppins', sans-serif;
-      --font-body: 'Inter', -apple-system, sans-serif;
+      --font-display: 'Plus Jakarta Sans', sans-serif;
+      --font-body: 'DM Sans', -apple-system, sans-serif;
       --bg: #0b0b0f;
       --bg-2: #101016;
       --bg-3: #15151d;
@@ -89,6 +89,40 @@
       color: var(--muted); border-bottom: 1px solid var(--border); transition: color 0.2s;
     }
     .mobile-menu a:hover { color: var(--white); }
+    .mobile-menu .mobile-sub { padding-left: 24px; font-size: 0.95rem; color: var(--dim); }
+
+    /* ─── NAV DROPDOWN ─── */
+    .nav-dropdown {
+      position: relative;
+    }
+    .nav-dropdown > a {
+      display: flex; align-items: center; gap: 4px; cursor: pointer;
+    }
+    .nav-dropdown > a::after {
+      content: ''; display: inline-block;
+      width: 0; height: 0;
+      border-left: 4px solid transparent; border-right: 4px solid transparent;
+      border-top: 4px solid currentColor;
+      transition: transform 0.2s;
+    }
+    .nav-dropdown:hover > a::after { transform: rotate(180deg); }
+    .nav-dropdown-menu {
+      position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
+      min-width: 160px; padding: 8px 0; margin-top: 12px;
+      background: var(--card-solid); border: 1px solid var(--border-2);
+      border-radius: var(--radius-sm);
+      opacity: 0; visibility: hidden; pointer-events: none;
+      transition: all 0.2s;
+      box-shadow: 0 12px 32px rgba(0,0,0,0.4);
+    }
+    .nav-dropdown:hover .nav-dropdown-menu {
+      opacity: 1; visibility: visible; pointer-events: auto; margin-top: 8px;
+    }
+    .nav-dropdown-menu a {
+      display: block; padding: 10px 20px; font-size: 0.78rem;
+      white-space: nowrap;
+    }
+    .nav-dropdown-menu a:hover { background: var(--gold-soft); color: var(--gold); }
 
     /* ─── CONTAINERS ─── */
     .container { max-width: var(--max-w); margin: 0 auto; padding: 0 32px; }
@@ -338,8 +372,6 @@
     .meta-item { font-size: 0.75rem; color: var(--dim); }
     .meta-item strong { display: block; font-size: 0.95rem; color: var(--white); font-weight: 600; margin-top: 3px; }
 
-    /* Uniform gold accent for all program cards */
-    .program-card { border-top: 3px solid var(--gold); }
 
     .program-video {
       margin-top: 28px; border-radius: var(--radius);
@@ -428,7 +460,8 @@
     }
     .exchange-card:hover { border-color: var(--border-2); transform: translateY(-4px); }
     .exchange-card:hover::after { opacity: 1; }
-    .exchange-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px; }
+    .exchange-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; gap: 12px; }
+    .exchange-top h3 { flex: 1; }
     .exchange-top h3 { font-family: var(--font-display); font-size: 1.4rem; font-weight: 700; }
     .exchange-rating { font-size: 0.85rem; font-weight: 700; color: var(--gold); }
     .exchange-for { font-size: 0.75rem; color: var(--dim); font-style: italic; margin-bottom: 20px; }
@@ -484,6 +517,78 @@
       content: open-quote; position: absolute; top: -32px; left: 50%; transform: translateX(-50%);
       font-size: 5rem; color: var(--gold); opacity: 0.15; font-weight: 800; line-height: 1;
     }
+
+    /* ─── WEBINAR CAROUSEL ─── */
+    .carousel-wrap { position: relative; overflow: hidden; }
+    .carousel-track {
+      display: flex; transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    .carousel-slide {
+      min-width: 100%; display: grid; grid-template-columns: 1fr 1fr;
+      gap: 56px; align-items: center; padding: 0 4px;
+    }
+    .carousel-slide-img {
+      width: 100%; border-radius: var(--radius);
+      aspect-ratio: 4/5; object-fit: cover;
+      border: 1px solid var(--border);
+    }
+    .carousel-slide-content { max-width: 480px; }
+    .carousel-badge {
+      display: inline-block; padding: 5px 14px; border-radius: var(--radius-pill);
+      font-size: 0.68rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.06em; margin-bottom: 16px;
+    }
+    .carousel-badge.free { background: rgba(76,175,80,0.15); color: #66bb6a; }
+    .carousel-badge.exclusive { background: var(--gold-soft); color: var(--gold); }
+    .carousel-controls {
+      display: flex; align-items: center; justify-content: center;
+      gap: 16px; margin-top: 48px;
+    }
+    .carousel-btn {
+      width: 44px; height: 44px; border-radius: 50%;
+      background: var(--card-solid); border: 1px solid var(--border-2);
+      color: var(--white); font-size: 1.1rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.25s;
+    }
+    .carousel-btn:hover { border-color: var(--gold); color: var(--gold); }
+    .carousel-dots { display: flex; gap: 8px; }
+    .carousel-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--dim); border: none; cursor: pointer;
+      transition: all 0.3s; padding: 0;
+    }
+    .carousel-dot.active { background: var(--gold); width: 24px; border-radius: 4px; }
+
+    @media (max-width: 768px) {
+      .carousel-slide { grid-template-columns: 1fr; gap: 24px; }
+      .carousel-slide-img { max-width: 280px; margin: 0 auto; }
+    }
+
+    /* ─── PARTNERS ─── */
+    .partners-strip {
+      padding: 48px 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-2);
+    }
+    .partners-label {
+      text-align: center; font-size: 0.7rem; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.12em;
+      color: var(--dim); margin-bottom: 32px;
+    }
+    .partners-row {
+      display: flex; align-items: center; justify-content: center;
+      gap: 48px; flex-wrap: wrap; max-width: var(--max-w); margin: 0 auto; padding: 0 32px;
+    }
+    .partner-logo {
+      height: 36px; width: auto; opacity: 0.45;
+      filter: grayscale(100%) brightness(2);
+      transition: all 0.35s;
+    }
+    .partner-logo:hover { opacity: 1; filter: grayscale(0%) brightness(1); }
+    .partner-logo.past { opacity: 0.25; }
+    .partner-logo.past:hover { opacity: 0.7; filter: grayscale(0%) brightness(1); }
 
     /* ─── DIVIDER ─── */
     .divider {
@@ -693,6 +798,8 @@
       .support-grid { grid-template-columns: 1fr 1fr; }
       .link-pills { flex-direction: column; align-items: center; }
       .program-card-inner { padding: 28px 24px; }
+      .partners-row { gap: 32px; }
+      .partner-logo { height: 28px; }
     }
   </style>
 </head>
@@ -706,12 +813,29 @@
   <div class="nav-inner">
     <a href="#home" class="nav-brand"><img src="TR%20logo.png" alt="TR"> TRADING REPUBLIC</a>
     <ul class="nav-menu">
-      <li><a href="#about">About</a></li>
       <li><a href="#ethos">Ethos</a></li>
       <li><a href="#programs">Programs</a></li>
+      <li class="nav-dropdown">
+        <a href="#blueprint">Videos</a>
+        <div class="nav-dropdown-menu">
+          <a href="#blueprint">Blueprint</a>
+          <a href="#hotmoney">Hot Money</a>
+        </div>
+      </li>
+      <li class="nav-dropdown">
+        <a href="#webinars">Webinars</a>
+        <div class="nav-dropdown-menu">
+          <a href="#webinars" onclick="goToSlide(0)">Monday Market Updates</a>
+          <a href="#webinars" onclick="goToSlide(1)">Trader's Journey</a>
+          <a href="#webinars" onclick="goToSlide(2)">Charting Your Way to Profit</a>
+          <a href="#webinars" onclick="goToSlide(3)">FGD Crypto</a>
+          <a href="#webinars" onclick="goToSlide(4)">FGD PSE</a>
+        </div>
+      </li>
       <li><a href="#community">Community</a></li>
       <li><a href="#exchanges">Exchanges</a></li>
       <li><a href="#faq">FAQ</a></li>
+      <li><a href="yield-tracker/index.html">Yield Tracker</a></li>
     </ul>
     <a href="https://discord.gg/tradingrepublic" target="_blank" class="nav-cta">
       Join Discord <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
@@ -720,12 +844,21 @@
   </div>
 </nav>
 <div class="mobile-menu">
-  <a href="#about" onclick="this.parentElement.classList.remove('open')">About</a>
   <a href="#ethos" onclick="this.parentElement.classList.remove('open')">Ethos</a>
   <a href="#programs" onclick="this.parentElement.classList.remove('open')">Programs</a>
+  <a href="#blueprint" onclick="this.parentElement.classList.remove('open')">Videos</a>
+  <a href="#blueprint" onclick="this.parentElement.classList.remove('open')" class="mobile-sub">Blueprint</a>
+  <a href="#hotmoney" onclick="this.parentElement.classList.remove('open')" class="mobile-sub">Hot Money</a>
+  <a href="#webinars" onclick="this.parentElement.classList.remove('open')">Webinars</a>
+  <a href="#webinars" onclick="this.parentElement.classList.remove('open');goToSlide(0)" class="mobile-sub">Monday Market Updates</a>
+  <a href="#webinars" onclick="this.parentElement.classList.remove('open');goToSlide(1)" class="mobile-sub">Trader's Journey</a>
+  <a href="#webinars" onclick="this.parentElement.classList.remove('open');goToSlide(2)" class="mobile-sub">Charting Your Way to Profit</a>
+  <a href="#webinars" onclick="this.parentElement.classList.remove('open');goToSlide(3)" class="mobile-sub">FGD Crypto</a>
+  <a href="#webinars" onclick="this.parentElement.classList.remove('open');goToSlide(4)" class="mobile-sub">FGD PSE</a>
   <a href="#community" onclick="this.parentElement.classList.remove('open')">Community</a>
   <a href="#exchanges" onclick="this.parentElement.classList.remove('open')">Exchanges</a>
   <a href="#faq" onclick="this.parentElement.classList.remove('open')">FAQ</a>
+  <a href="yield-tracker/index.html" onclick="this.parentElement.classList.remove('open')">Yield Tracker</a>
   <a href="https://discord.gg/tradingrepublic" target="_blank" style="color:var(--gold)">Join Discord →</a>
 </div>
 
@@ -749,16 +882,6 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>
           </a>
         </div>
-        <div class="social-proof reveal">
-          <div class="avatar-stack">
-            <div class="avatar float" style="animation-duration:3s">Z</div>
-            <div class="avatar float float-d1" style="animation-duration:3.5s">T</div>
-            <div class="avatar float float-d2" style="animation-duration:4s">R</div>
-            <div class="avatar float float-d3" style="animation-duration:3.2s">C</div>
-            <div class="avatar float" style="animation-duration:3.8s">+</div>
-          </div>
-          <div class="social-proof-text"><strong><span class="counter" data-target="200" data-suffix="K+">0</span> trusted</strong> traders &amp; investors<br>across stocks, forex &amp; crypto</div>
-        </div>
       </div>
       <div class="hero-video reveal-scale reveal-d2">
         <iframe src="https://www.youtube.com/embed/NL3rdANP2vg" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
@@ -775,30 +898,117 @@
   </div>
 </div>
 
-<!-- ═══════════ HOW TO JOIN ═══════════ -->
-<section class="section section-dark" id="about">
+<!-- ═══════════ PARTNERS ═══════════ -->
+<div class="partners-strip">
+  <div class="partners-label">Trusted Partners</div>
+  <div class="partners-row">
+    <img src="logos/bitget.png" alt="Bitget" class="partner-logo">
+    <img src="logos/okx.png" alt="OKX" class="partner-logo">
+    <img src="logos/mexc.png" alt="MEXC" class="partner-logo">
+    <img src="logos/bybit.png" alt="Bybit" class="partner-logo">
+    <img src="logos/xm.svg" alt="XM" class="partner-logo past">
+    <img src="logos/etoro.svg" alt="eToro" class="partner-logo past">
+  </div>
+</div>
+
+<!-- ═══════════ WEBINARS ═══════════ -->
+<section class="section" id="webinars">
   <div class="container">
-    <div class="two-col">
-      <div>
-        <div class="eyebrow reveal-left">Getting Started</div>
-        <h2 class="heading-lg reveal-left reveal-d1">How to Gain <span class="gold">Entry</span></h2>
-        <p class="text-body reveal-left reveal-d2 mt-24" style="max-width:440px">Join the Discord server and complete 7 simple steps to become part of the Republic. It only takes a few minutes.</p>
-        <a href="https://discord.gg/tradingrepublic" target="_blank" class="btn btn-gold reveal-left reveal-d3 mt-24">Open Discord →</a>
-      </div>
-      <div class="steps-list stagger-children">
-        <div class="step-item"><div class="step-num">1</div><div><h4>Click Verify</h4><p>Find and click the "Verify" button at the bottom of the initial channel.</p></div></div>
-        <div class="step-item"><div class="step-num">2</div><div><h4>Disable DMs</h4><p>Disable direct messages following the instructions, then click "Continue."</p></div></div>
-        <div class="step-item"><div class="step-num">3</div><div><h4>Accept Prompt</h4><p>Click "Continue" when prompted about server rules.</p></div></div>
-        <div class="step-item"><div class="step-num">4</div><div><h4>Complete Captcha</h4><p>Solve the captcha to obtain the verified role.</p></div></div>
-        <div class="step-item"><div class="step-num">5</div><div><h4>Read Me First</h4><p>Navigate to the "Read Me First" channel.</p></div></div>
-        <div class="step-item"><div class="step-num">6</div><div><h4>Follow the Steps</h4><p>Follow instructions in "How to gain access to our server?"</p></div></div>
-        <div class="step-item"><div class="step-num">7</div><div><h4>Agree to Rules</h4><p>Read the guidelines and click the checkmark "I Agree."</p></div></div>
-      </div>
+    <div class="text-center mb-56">
+      <div class="eyebrow reveal" style="justify-content:center">Weekly Webinars</div>
+      <h2 class="heading-lg reveal">Learn from the <span class="gold">best.</span></h2>
+      <p class="text-body max-w-500 mx-auto reveal mt-24">Live sessions every week from TR's top coaches. Show up, take notes, and level up.</p>
     </div>
 
-    <div class="reveal mt-56" style="max-width:600px">
-      <h3 class="heading-sm mb-16">Citizen KYC Process</h3>
-      <p class="text-sm">Citizens must introduce themselves (name, location, description), update nickname to "Name - Citizen," upload a clear facial photo, and wait 24-72 hours for admin verification. This builds trust and enables prize distribution. Sensitive details remain restricted to administrators.</p>
+    <div class="carousel-wrap reveal">
+      <div class="carousel-track" id="webinarCarousel">
+
+        <!-- Slide 1: Monday Market Updates -->
+        <div class="carousel-slide">
+          <img src="webinars/MMU.png" alt="Monday Market Updates" class="carousel-slide-img">
+          <div class="carousel-slide-content">
+            <div class="carousel-badge free">Free</div>
+            <h3 class="heading-md">Monday Market Updates</h3>
+            <p class="text-body mt-24">Your weekly edge from Boss Zeefreaks himself — spotting opportunities amid the chaos. A straightforward breakdown of what's moving in the markets right now and where to look next.</p>
+            <p class="text-sm mt-24" style="color:var(--gold);font-style:italic">Pro-tip: A lot of golden nuggets get dropped here.</p>
+            <p class="text-sm mt-24"><strong style="color:var(--white)">Every Monday</strong> <span style="color:var(--dim)">with Boss Zeefreaks</span></p>
+          </div>
+        </div>
+
+        <!-- Slide 2: Trader's Journey -->
+        <div class="carousel-slide">
+          <img src="webinars/tradersjourney.jpg" alt="Trader's Journey" class="carousel-slide-img">
+          <div class="carousel-slide-content">
+            <div class="carousel-badge free">Free</div>
+            <h3 class="heading-md">Trader's Journey</h3>
+            <p class="text-body mt-24">Your step-by-step roadmap to building watchlists and turning them into actionable trade ideas. Learn how to generate your own setups instead of relying on someone else's calls.</p>
+            <p class="text-sm mt-24"><strong style="color:var(--white)">Exclusive for TR x MEXC Users</strong> <span style="color:var(--dim)">with Coach Sean</span></p>
+          </div>
+        </div>
+
+        <!-- Slide 3: Charting Your Way to Profit -->
+        <div class="carousel-slide">
+          <img src="webinars/chartingyourway.jpg" alt="Charting Your Way to Profit" class="carousel-slide-img">
+          <div class="carousel-slide-content">
+            <div class="carousel-badge free">Free</div>
+            <h3 class="heading-md">Charting Your Way to Profit</h3>
+            <p class="text-body mt-24">A beginner-friendly trading webinar series that covers the essentials — from top-down analysis and market structure to trading psychology and risk management. No fluff, just the skills you need.</p>
+            <p class="text-sm mt-24"><strong style="color:var(--white)">Every Wednesday at 8PM</strong> <span style="color:var(--dim)">with Coach Jico (Glacier)</span></p>
+            <p class="text-sm" style="color:var(--dim)">Exclusive for TR x Bitget Users</p>
+          </div>
+        </div>
+
+        <!-- Slide 4: FGD Crypto -->
+        <div class="carousel-slide">
+          <img src="webinars/fgd%20crypto.webp" alt="FGD Crypto" class="carousel-slide-img">
+          <div class="carousel-slide-content">
+            <div class="carousel-badge exclusive">Citizens Only</div>
+            <h3 class="heading-md">FGD Crypto</h3>
+            <p class="text-body mt-24">Coach Ren's weekly deep dive into live trade walkthroughs and chart breakdowns. Feeling lost or overwhelmed by trading concepts? This is where you fill the gaps and see the bigger picture in crypto.</p>
+            <p class="text-body mt-16">Ask your questions, get real answers, and sharpen your strategy — one session at a time.</p>
+            <p class="text-sm mt-24"><strong style="color:var(--white)">Every Thursday</strong> <span style="color:var(--dim)">with Coach Ren</span></p>
+          </div>
+        </div>
+
+        <!-- Slide 5: FGD PSE -->
+        <div class="carousel-slide">
+          <img src="webinars/fgdpse_rochelle.png" alt="FGD PSE" class="carousel-slide-img">
+          <div class="carousel-slide-content">
+            <div class="carousel-badge exclusive">Citizens Only</div>
+            <h3 class="heading-md">FGD PSE</h3>
+            <p class="text-body mt-24">Proof that there's still serious money to be made in the Philippine Stock Market. Weekly trade reviews and discussions covering Technical Analysis, Risk Management, and Trading Psychology using the ZFT system.</p>
+            <p class="text-sm mt-24"><strong style="color:var(--white)">Every Friday at 8PM</strong> <span style="color:var(--dim)">with Coach Rochelle</span></p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Controls -->
+      <div class="carousel-controls">
+        <button class="carousel-btn" onclick="moveCarousel(-1)" aria-label="Previous">&#8592;</button>
+        <div class="carousel-dots" id="carouselDots">
+          <button class="carousel-dot active" onclick="goToSlide(0)"></button>
+          <button class="carousel-dot" onclick="goToSlide(1)"></button>
+          <button class="carousel-dot" onclick="goToSlide(2)"></button>
+          <button class="carousel-dot" onclick="goToSlide(3)"></button>
+          <button class="carousel-dot" onclick="goToSlide(4)"></button>
+        </div>
+        <button class="carousel-btn" onclick="moveCarousel(1)" aria-label="Next">&#8594;</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ CALENDAR ═══════════ -->
+<section class="section section-dark" id="calendar">
+  <div class="container">
+    <div class="text-center mb-56">
+      <div class="eyebrow reveal" style="justify-content:center">Schedule</div>
+      <h2 class="heading-lg reveal">Upcoming <span class="gold">Events</span></h2>
+      <p class="text-body max-w-500 mx-auto reveal mt-24">Webinars, live sessions, and community events — all in one place. Never miss a session.</p>
+    </div>
+    <div class="reveal" style="border-radius:var(--radius);overflow:hidden;border:1px solid var(--border);background:var(--bg-3)">
+      <iframe src="https://calendar.google.com/calendar/embed?src=d90baac1cb808fb5867e9befac50d99389549df92952aebff77f26ec359d24a3%40group.calendar.google.com&ctz=Asia/Manila&bgcolor=%230b0b0f&color=%23F9A825&showTitle=0&showNav=1&showPrint=0&showCalendars=0" style="width:100%;height:560px;border:none;filter:invert(0.88) hue-rotate(180deg) saturate(0.6) contrast(0.9)" loading="lazy"></iframe>
     </div>
   </div>
 </section>
@@ -860,38 +1070,6 @@
   </div>
 </section>
 
-<!-- ═══════════ HOUSE RULES ═══════════ -->
-<section class="section">
-  <div class="container">
-    <div class="text-center mb-56">
-      <div class="eyebrow reveal" style="justify-content:center">The Code</div>
-      <h2 class="heading-lg reveal">House Rules & <span class="gold">Penalties</span></h2>
-      <p class="text-body max-w-500 mx-auto reveal mt-24">Be your authentic self with proper boundaries. Always choose kindness. And avoid asking of others what you aren't willing to give.</p>
-    </div>
-
-    <div class="rules-grid stagger-children">
-      <div class="rule"><div class="rule-num">1</div><p>Be friendly and show respect to everyone, regardless of role.</p></div>
-      <div class="rule"><div class="rule-num">2</div><p>Don't tag people or roles repeatedly without good purpose.</p></div>
-      <div class="rule"><div class="rule-num">3</div><p>No harassment, abuse, hate speech, or discriminatory speech.</p></div>
-      <div class="rule"><div class="rule-num">4</div><p>No pornography, racism, or disturbing content. Severe sanctions.</p></div>
-      <div class="rule"><div class="rule-num">5</div><p>Follow proper name formats or remain unverified.</p></div>
-      <div class="rule"><div class="rule-num">6</div><p>Provide solutions. Don't just criticize. Be the change.</p></div>
-      <div class="rule"><div class="rule-num">7</div><p>Be respectful of everyone's opinion.</p></div>
-      <div class="rule"><div class="rule-num">8</div><p>Avoid sensitive topics, especially politics.</p></div>
-      <div class="rule"><div class="rule-num">9</div><p>Don't promote competing products in our channels.</p></div>
-      <div class="rule"><div class="rule-num">10</div><p>Don't distribute paid/confidential TR content outside.</p></div>
-      <div class="rule rule-full"><div class="rule-num">11</div><p>Don't distribute external paid content inside Trading Republic.</p></div>
-    </div>
-
-    <div class="penalty-row stagger-children mt-56">
-      <div class="penalty-card p1"><div class="penalty-degree">1st</div><h4>Silenced</h4><p>Up to one week, read-only.</p></div>
-      <div class="penalty-card p2"><div class="penalty-degree">2nd</div><h4>One-Week Ban</h4><p>Full access revoked.</p></div>
-      <div class="penalty-card p3"><div class="penalty-degree">3rd</div><h4>Permanent</h4><p>Server removal.</p></div>
-    </div>
-  </div>
-</section>
-
-<div class="divider"></div>
 
 <!-- ═══════════ QUOTE ═══════════ -->
 <div class="quote-section">
@@ -922,14 +1100,11 @@
           </div>
           <a href="https://shop.tradingrepublic.io/collections/subscriptions" target="_blank" class="btn btn-gold">Subscribe Now →</a>
         </div>
-        <p class="text-body">An aftercare service evolved to serve traders at all levels — beginner to advanced. Find your identity and mastery in the markets. Access 300+ webinars, gamified quests with real rewards, vetted community, and in-person events.</p>
+        <p class="text-body">An aftercare service evolved to serve traders at all levels — beginner to advanced. Find your identity and mastery in the markets. Access 300+ exclusive webinars, alpha, gamified quests with real rewards, vetted community, and in-person events.</p>
         <div class="program-meta">
           <div class="meta-item">Recommended<strong>6+ Months</strong></div>
           <div class="meta-item">Content<strong>300+ Webinars</strong></div>
           <div class="meta-item">Style<strong>Aftercare + Community</strong></div>
-        </div>
-        <div class="program-video">
-          <iframe src="https://www.youtube.com/embed/t5kpReoAhRg" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
         </div>
         <p class="text-sm mt-24">The Trading Republic awaits you... Citizen.</p>
       </div>
@@ -945,7 +1120,7 @@
             <h3>#TR4Ever — The Eternals</h3>
           </div>
         </div>
-        <p class="text-body">Unwavering loyalty rewarded with lifetime access. Unrestricted Drive access, priority event passes, free lifetime membership with no future price increases, sit-in privileges for TI and Web3 sessions, exclusive recordings, and Eternals-only giveaways.</p>
+        <p class="text-body">Unwavering loyalty rewarded with lifetime access. Access to The Vault which has 300+ videos of basic and advanced trading webinars since 2020, priority event passes, free lifetime membership with no future price increases, sit-in privileges for TI and Web3 sessions, exclusive recordings, and Eternals-only giveaways.</p>
         <div class="program-meta">
           <div class="meta-item">Base Price<strong>₱88,000</strong></div>
           <div class="meta-item">Wealth Builder<strong>₱59,999</strong></div>
@@ -956,10 +1131,34 @@
       </div>
     </div>
 
-    <!-- TI -->
+    <!-- Wealth Builder -->
     <div class="program-card reveal-scale">
       <div class="program-card-inner">
         <div class="program-num">03</div>
+        <div class="program-header">
+          <div class="program-header-left">
+            <div class="program-tag">Bundle</div>
+            <h3>Wealth Builder</h3>
+          </div>
+        </div>
+        <p class="text-body">Enhance your skills with Wealth Builder. Includes the 2 best-selling courses of ZFT:</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:24px">
+          <div style="padding:24px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm)">
+            <h4 style="font-size:0.9rem;margin-bottom:8px">Technical Intensive</h4>
+            <p class="text-sm">The premium and best-selling ZFT course. Master the art of technical trading using the tried and tested ZFT system for all markets — WEBS, PSE, US, Forex.</p>
+          </div>
+          <div style="padding:24px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm)">
+            <h4 style="font-size:0.9rem;margin-bottom:8px">WEB3 Masterclass</h4>
+            <p class="text-sm">The ultimate course on how to make magic Internet money.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TI -->
+    <div class="program-card reveal-scale">
+      <div class="program-card-inner">
+        <div class="program-num">04</div>
         <div class="program-header">
           <div class="program-header-left">
             <div class="program-tag">Course</div>
@@ -972,7 +1171,7 @@
           <div class="meta-item">Duration<strong>2 Months</strong></div>
           <div class="meta-item">Hours<strong>50+</strong></div>
           <div class="meta-item">Level<strong>Beginner–Intermediate</strong></div>
-          <div class="meta-item">Cost<strong>₱35K – ₱50K</strong></div>
+          <div class="meta-item">Price<strong>₱25,999</strong></div>
         </div>
         <div class="modules-grid">
           <div class="module-chip"><div class="module-num">01</div><div class="module-name">Mindset</div></div>
@@ -987,24 +1186,25 @@
           <div class="module-chip"><div class="module-num">10</div><div class="module-name">Probabilities</div></div>
         </div>
         <p class="text-sm mt-24"><strong style="color:var(--white)">Schedule:</strong> Main sessions Mon/Wed/Fri 8–11PM PHT · Q&A Tue/Thu/Sat 8PM+ PHT</p>
-        <p class="text-sm">Includes welcome package, live consultations, session recordings, and TR community access. ₱8,000 reservation (non-refundable, convertible to 8-month TR Sub).</p>
+        <p class="text-sm">Includes session recordings, live consultations with coaches and 3-month TR community access.</p>
       </div>
     </div>
 
-    <!-- Crypto MC -->
+    <!-- WEB3 Masterclass -->
     <div class="program-card reveal-scale">
       <div class="program-card-inner">
-        <div class="program-num">04</div>
+        <div class="program-num">05</div>
         <div class="program-header">
           <div class="program-header-left">
             <div class="program-tag">Course</div>
-            <h3>Crypto Masterclass [CM]</h3>
+            <h3>WEB3 Masterclass</h3>
           </div>
           <a href="https://shop.tradingrepublic.io/products/crypto-masterclass" target="_blank" class="btn btn-gold">Enroll Now →</a>
         </div>
-        <p class="text-body">Educate and equip yourself with the knowledge to profit and minimize risks in crypto. Learn the rewards and risks of DeFi, NFTs, and HODLing — and how to create asymmetry between opportunity and loss.</p>
-        <div class="program-video">
-          <iframe src="https://www.youtube.com/embed/y59dsdCFZxA" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+        <p class="text-body">Discover the latest strategies and the newest WEB3 opportunities this 2026. Includes the most sought-after course from Zeefreaks — Liquidity Mining Masterclass.</p>
+        <p class="text-body mt-16">Learn expert-level portfolio allocation, risk management and investment mindset from veteran ZFT coaches and Zeefreaks himself.</p>
+        <div class="program-meta">
+          <div class="meta-item">Price<strong>₱29,999</strong></div>
         </div>
       </div>
     </div>
@@ -1026,6 +1226,58 @@
   </div>
 </section>
 
+<!-- ═══════════ BLUEPRINT ═══════════ -->
+<section class="section section-dark" id="blueprint">
+  <div class="container">
+    <div class="two-col" style="align-items:center">
+      <div>
+        <div class="eyebrow reveal-left">Free Course</div>
+        <h2 class="heading-lg reveal-left reveal-d1">Trading Republic <span class="gold">Blueprint</span></h2>
+        <p class="text-body reveal-left reveal-d2 mt-24" style="max-width:440px">The ultimate beginner's guide to reading the charts. A no-nonsense, fully free video course built for people starting from zero.</p>
+        <ul class="reveal-left reveal-d3 mt-24" style="list-style:none;display:flex;flex-direction:column;gap:12px">
+          <li style="color:var(--text);font-size:0.9rem;display:flex;align-items:flex-start;gap:10px"><span style="color:var(--gold);font-weight:700;flex-shrink:0">01</span> What trading really is and how it works</li>
+          <li style="color:var(--text);font-size:0.9rem;display:flex;align-items:flex-start;gap:10px"><span style="color:var(--gold);font-weight:700;flex-shrink:0">02</span> Reading charts with support and resistance</li>
+          <li style="color:var(--text);font-size:0.9rem;display:flex;align-items:flex-start;gap:10px"><span style="color:var(--gold);font-weight:700;flex-shrink:0">03</span> Catching trends using moving averages</li>
+          <li style="color:var(--text);font-size:0.9rem;display:flex;align-items:flex-start;gap:10px"><span style="color:var(--gold);font-weight:700;flex-shrink:0">04</span> Building your own trade plan</li>
+          <li style="color:var(--text);font-size:0.9rem;display:flex;align-items:flex-start;gap:10px"><span style="color:var(--gold);font-weight:700;flex-shrink:0">05</span> Trading psychology — managing emotions and building discipline</li>
+        </ul>
+        <a href="https://www.youtube.com/playlist?list=PL033hJEN0tRsgTDmsylZus4BONq8zeHjN" target="_blank" class="btn btn-gold reveal-left reveal-d3" style="margin-top:32px">
+          Watch the Full Playlist <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+      <div class="reveal">
+        <div class="program-video" style="margin-top:0">
+          <iframe src="https://www.youtube.com/embed/videoseries?list=PL033hJEN0tRsgTDmsylZus4BONq8zeHjN" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ HOT MONEY ═══════════ -->
+<section class="section" id="hotmoney">
+  <div class="container">
+    <div class="two-col reverse" style="align-items:center">
+      <div>
+        <div class="eyebrow reveal-left">Free Series</div>
+        <h2 class="heading-lg reveal-left reveal-d1">Hot Money <span class="gold">Season 2</span></h2>
+        <p class="text-body reveal-left reveal-d2 mt-24" style="max-width:440px">The sequel hits harder. Real trades, real lessons, real market breakdowns — filmed as it happens. If Blueprint taught you the foundations, Hot Money shows you how it plays out live.</p>
+        <a href="https://www.youtube.com/playlist?list=PL033hJEN0tRvXJJ3n4oYiamLzS6eHlQq3" target="_blank" class="btn btn-gold reveal-left reveal-d3" style="margin-top:32px">
+          Watch Season 2 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+        <a href="https://www.youtube.com/playlist?list=PL033hJEN0tRsOoYY4fqipN3w0oDJBrDSd" target="_blank" class="reveal-left reveal-d3" style="display:inline-block;margin-top:16px;font-size:0.78rem;color:var(--dim);transition:color 0.2s">
+          Looking for Season 1? Watch here →
+        </a>
+      </div>
+      <div class="reveal">
+        <div class="program-video" style="margin-top:0">
+          <iframe src="https://www.youtube.com/embed/videoseries?list=PL033hJEN0tRvXJJ3n4oYiamLzS6eHlQq3" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ═══════════ COMMUNITY ═══════════ -->
 <section class="section section-dark" id="community">
   <div class="container">
@@ -1034,19 +1286,6 @@
       <h2 class="heading-lg reveal">More than a server. <span class="gold">A republic.</span></h2>
     </div>
 
-    <!-- The Drive -->
-    <div class="text-center mb-24">
-      <h3 class="heading-md reveal">The Drive</h3>
-      <p class="text-body max-w-500 mx-auto reveal mt-24">A comprehensive content library that takes months to explore. Four tiers unlocked by your membership level.</p>
-    </div>
-
-    <div class="drive-grid stagger-children">
-      <div class="drive-card"><div class="drive-num">0</div><h4>Public</h4><p>Curated content from public socials.</p><div class="access">Explorers+</div></div>
-      <div class="drive-card"><div class="drive-num">1</div><h4>Introductory</h4><p>Basic webinars and focus groups.</p><div class="access">Navigators+</div></div>
-      <div class="drive-card"><div class="drive-num">2</div><h4>Advanced</h4><p>Advanced webinar directory.</p><div class="access">Ensigns+</div></div>
-      <div class="drive-card top"><div class="drive-num">3</div><h4>Top Tier</h4><p>Premium top-tier directory.</p><div class="access">Captains & Eternals</div></div>
-    </div>
-    <p class="text-sm text-center reveal mt-24">Use your registered email to access Google Drive content.</p>
   </div>
 </section>
 
@@ -1067,18 +1306,6 @@
       <div class="tier-row featured">
         <div class="tier-left"><h4>Citizens</h4><div class="tier-badge">Paid Sub</div></div>
         <div class="tier-right"><p>Active TR subscription holders. All Citizens are verified Explorers first.</p><ul class="perk-pills"><li>All Explorer perks</li><li>All trading channels</li><li>Most webinars</li><li>Major giveaways</li><li>Discord vanity icon</li></ul></div>
-      </div>
-      <div class="tier-row">
-        <div class="tier-left"><h4>Navigators</h4><div class="tier-badge">7 Months</div></div>
-        <div class="tier-right"><p>7 months continuous membership.</p><ul class="perk-pills"><li>Drive Level 1</li><li>Exclusive insignia</li></ul></div>
-      </div>
-      <div class="tier-row">
-        <div class="tier-left"><h4>Ensigns</h4><div class="tier-badge">13 Months</div></div>
-        <div class="tier-right"><p>13 months continuous membership.</p><ul class="perk-pills"><li>Drive Level 2</li><li>Exclusive insignia</li></ul></div>
-      </div>
-      <div class="tier-row featured">
-        <div class="tier-left"><h4>Captains</h4><div class="tier-badge">TR4Ever</div></div>
-        <div class="tier-right"><p>Exclusive to TR4Ever subscribers.</p><ul class="perk-pills"><li>Drive Level 3</li><li>Distinctive insignia</li></ul></div>
       </div>
       <div class="tier-row">
         <div class="tier-left"><h4>Community Leaders</h4><div class="tier-badge">Selected</div></div>
@@ -1149,7 +1376,7 @@
 
     <div class="exchange-grid stagger-children">
       <div class="exchange-card tilt-card">
-        <div class="exchange-top"><h3>OKX</h3><div class="exchange-rating">★ 4.3</div></div>
+        <div class="exchange-top"><img src="logos/okx.png" alt="OKX" style="height:32px;width:32px;border-radius:8px"><h3>OKX</h3><div class="exchange-rating">★ 4.3</div></div>
         <div class="exchange-for">Best for all-in-one power users</div>
         <div class="exchange-stats">
           <div class="ex-stat"><div class="ex-stat-label">Spot Fee</div><div class="ex-stat-val">0.08%</div></div>
@@ -1160,7 +1387,7 @@
         <a href="https://www.okx.com/join/OFF2O" target="_blank" class="cta-link">Sign up with 20% off <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
       </div>
       <div class="exchange-card tilt-card">
-        <div class="exchange-top"><h3>Bybit</h3><div class="exchange-rating">★ 3.8</div></div>
+        <div class="exchange-top"><img src="logos/bybit.png" alt="Bybit" style="height:32px;width:32px;border-radius:8px"><h3>Bybit</h3><div class="exchange-rating">★ 3.8</div></div>
         <div class="exchange-for">Best for pro traders & copy trade</div>
         <div class="exchange-stats">
           <div class="ex-stat"><div class="ex-stat-label">Futures Fee</div><div class="ex-stat-val">0.06%</div></div>
@@ -1171,7 +1398,7 @@
         <a href="https://partner.bybit.com/b/tradingrepub" target="_blank" class="cta-link">Sign up with 20% off <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
       </div>
       <div class="exchange-card tilt-card">
-        <div class="exchange-top"><h3>Bitget</h3><div class="exchange-rating">★ 4.2</div></div>
+        <div class="exchange-top"><img src="logos/bitget.png" alt="Bitget" style="height:32px;width:32px;border-radius:8px"><h3>Bitget</h3><div class="exchange-rating">★ 4.2</div></div>
         <div class="exchange-for">Best for newbies & social trading</div>
         <div class="exchange-stats">
           <div class="ex-stat"><div class="ex-stat-label">Leverage</div><div class="ex-stat-val">125×</div></div>
@@ -1182,7 +1409,7 @@
         <a href="https://partner.bitget.com/bg/OFF20" target="_blank" class="cta-link">Sign up with 20% off <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
       </div>
       <div class="exchange-card tilt-card">
-        <div class="exchange-top"><h3>MEXC</h3><div class="exchange-rating">★ 3.9</div></div>
+        <div class="exchange-top"><img src="logos/mexc.png" alt="MEXC" style="height:32px;width:32px;border-radius:8px"><h3>MEXC</h3><div class="exchange-rating">★ 3.9</div></div>
         <div class="exchange-for">Best for altcoin hunters & scalpers</div>
         <div class="exchange-stats">
           <div class="ex-stat"><div class="ex-stat-label">Spot Fee</div><div class="ex-stat-val">0%</div></div>
@@ -1206,7 +1433,7 @@
     <div class="faq-list stagger-children">
       <div class="faq-item">
         <button class="faq-q" onclick="this.parentElement.classList.toggle('open')">How do I join the Trading Republic?</button>
-        <div class="faq-a"><p>Join via <a href="https://discord.gg/tradingrepublic" target="_blank" style="color:var(--gold)">discord.gg/tradingrepublic</a> and complete the 7-step verification process: verify, disable DMs, accept the prompt, complete captcha, read the intro channel, follow the steps, and agree to the rules.</p></div>
+        <div class="faq-a"><p>Join via <a href="https://discord.gg/tradingrepublic" target="_blank" style="color:var(--gold)">discord.gg/tradingrepublic</a> and complete the 7-step simple verification process: verify, disable DMs, accept the prompt, complete captcha, read the intro channel, follow the steps, and agree to the rules.</p></div>
       </div>
       <div class="faq-item">
         <button class="faq-q" onclick="this.parentElement.classList.toggle('open')">What's the difference between Explorers and Citizens?</button>
@@ -1214,15 +1441,11 @@
       </div>
       <div class="faq-item">
         <button class="faq-q" onclick="this.parentElement.classList.toggle('open')">What is TR4Ever / The Eternals?</button>
-        <div class="faq-a"><p>A one-time lifetime membership starting at ₱88,000 (discounts available). Eternals get unrestricted Drive access, priority event passes, sit-in privileges for TI and Web3 sessions, exclusive recordings, and no future price increases.</p></div>
+        <div class="faq-a"><p>A one-time lifetime membership starting at ₱88,000 (discounts available). Eternals get access to The Vault which has 300+ videos of basic and advanced trading webinars since 2020, priority event passes, exclusive recordings, and no future price increases.</p></div>
       </div>
       <div class="faq-item">
         <button class="faq-q" onclick="this.parentElement.classList.toggle('open')">How long is the Technical Intensive course?</button>
-        <div class="faq-a"><p>2 months including bonus sessions. 50+ hours of live instruction across 10 modules covering mindset, psychology, Darvas, moving averages, Fibonacci, RSI, risk management, backtesting, and probabilities. Cost is ₱35,000–₱50,000.</p></div>
-      </div>
-      <div class="faq-item">
-        <button class="faq-q" onclick="this.parentElement.classList.toggle('open')">How do the Drive content tiers work?</button>
-        <div class="faq-a"><p>Tier 0 (public) is free. Tier 1 unlocks at Navigator status (7 months). Tier 2 at Ensign (13 months). Tier 3 is reserved for Captains (TR4Ever) and Eternals. Each tier adds deeper webinar content.</p></div>
+        <div class="faq-a"><p>2 months including bonus sessions. 50+ hours of live instruction across 10 modules covering mindset, psychology, Darvas, moving averages, Fibonacci, RSI, risk management, backtesting, and probabilities. Price: ₱25,999.</p></div>
       </div>
       <div class="faq-item">
         <button class="faq-q" onclick="this.parentElement.classList.toggle('open')">Which crypto exchange should I use?</button>
@@ -1247,8 +1470,7 @@
       <a href="https://discord.gg/tradingrepublic" target="_blank" class="link-pill"><svg viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg> Discord</a>
       <a href="https://www.youtube.com/@tradingrepubliczft" target="_blank" class="link-pill"><svg viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg> YouTube</a>
       <a href="https://www.tiktok.com/@tradingrepublic.zft" target="_blank" class="link-pill"><svg viewBox="0 0 24 24"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg> TikTok</a>
-      <a href="https://www.facebook.com/tradingrepublic" target="_blank" class="link-pill"><svg viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg> Facebook</a>
-      <a href="https://shop.tradingrepublic.io/" target="_blank" class="link-pill"><svg viewBox="0 0 24 24"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/></svg> ZFT Shop</a>
+      <a href="https://www.facebook.com/thetradingrepublic" target="_blank" class="link-pill"><svg viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg> Facebook</a>
     </div>
   </div>
 </section>
@@ -1258,11 +1480,36 @@
   <div class="container">
     <img src="TR%20logo.png" alt="TR" style="height:36px;width:auto;margin-bottom:14px;opacity:0.5">
     <p style="text-transform:uppercase;letter-spacing:0.08em;font-weight:600;font-size:0.7rem"><span class="brand">TRADING REPUBLIC</span> — BY ZFT</p>
+    <p style="margin-top:12px;font-size:0.72rem;color:var(--dim)">Created by <a href="https://x.com/jayowtrades" target="_blank" style="color:var(--gold);text-decoration:none;font-weight:500">jayowtrades</a></p>
   </div>
 </footer>
 
 <!-- ═══════════ SCRIPTS ═══════════ -->
 <script>
+  // ── WEBINAR CAROUSEL ──
+  let currentSlide = 0;
+  const totalSlides = 5;
+  const track = document.getElementById('webinarCarousel');
+  const dots = document.querySelectorAll('#carouselDots .carousel-dot');
+
+  function goToSlide(n) {
+    currentSlide = n;
+    track.style.transform = `translateX(-${currentSlide * 100}%)`;
+    dots.forEach((d, i) => d.classList.toggle('active', i === currentSlide));
+  }
+
+  function moveCarousel(dir) {
+    goToSlide((currentSlide + dir + totalSlides) % totalSlides);
+  }
+
+  // Auto-advance every 6 seconds
+  let carouselTimer = setInterval(() => moveCarousel(1), 6000);
+  const carouselWrap = document.querySelector('.carousel-wrap');
+  if (carouselWrap) {
+    carouselWrap.addEventListener('mouseenter', () => clearInterval(carouselTimer));
+    carouselWrap.addEventListener('mouseleave', () => { carouselTimer = setInterval(() => moveCarousel(1), 6000); });
+  }
+
   // ── SCROLL REVEAL (all reveal types) ──
   const revealObs = new IntersectionObserver(entries => {
     entries.forEach(e => {
