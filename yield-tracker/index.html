@@ -560,7 +560,8 @@ h3 { font-size: 1.2rem; }
       <button class="filter-btn active" data-filter="all">All</button>
       <button class="filter-btn" data-filter="traditional">Traditional Banks</button>
       <button class="filter-btn" data-filter="digital">Digital Banks</button>
-      <button class="filter-btn" data-filter="crypto">Crypto <span style="font-size:0.65rem; background:var(--gold-dim); color:var(--gold); padding:2px 6px; border-radius:4px; margin-left:4px; font-weight:600; vertical-align:middle;">SOON</span></button>
+      <button class="filter-btn" data-filter="cex">CEX</button>
+      <button class="filter-btn" data-filter="dex">DEX</button>
     </div>
 
     <div class="search-bar reveal">
@@ -724,9 +725,11 @@ let currentFilter = 'all';
 // ═══════════ FETCH FROM GOOGLE SHEETS ═══════════
 function mapCategory(cat) {
   if (!cat) return 'digital';
-  const c = cat.toLowerCase();
+  const c = cat.toLowerCase().trim();
   if (c.includes('traditional')) return 'traditional';
-  if (c.includes('digital')) return 'digital';
+  if (c.includes('digital'))     return 'digital';
+  if (c === 'cex' || c.includes('centralized')) return 'cex';
+  if (c === 'dex' || c.includes('defi') || c.includes('decentralized')) return 'dex';
   if (c.includes('crypto')) return 'crypto';
   return 'digital';
 }
@@ -811,8 +814,113 @@ const LOGO_MAP = {
   'okx': 'logos/okx.png',
   'youhodler': 'logos/youhodler.png',
   'bybit': 'logos/bybit.png',
+  'bitget': 'logos/bitget.png',
+  'mexc': 'logos/mexc.png',
   'gate': 'logos/gate.png',
+  'kamino': 'logos/kamino.png',
+  'jupiter': 'logos/jupiter.png',
+  'loopscale': 'logos/loopscale.png',
+  'compound': 'logos/compound.png',
 };
+
+// ═══════════ CEX DATA (snapshot — verify in-app) ═══════════
+// CEX rates: no public API works browser-side (Cloudflare blocks cross-origin); snapshot from product pages.
+const CEX_SNAPSHOT_DATE = '2026-04-30';
+const CEX_DATA = [
+  { provider: 'MEXC',    product: 'MEXC Savings — USDC (Promo)',  type: 'cex', currency: 'USD', stablecoin: 'USDC', rateType: 'Promo',    rateCondition: 'Flexible', apy: 8.00, validity: 'Promo / campaign', maxCap: 0, maxCapText: 'Quota-limited',         rateAfterCap: 0, link: 'https://www.mexc.com/earn',      notes: 'Heavily promo-driven; treat rate as campaign-dependent. Verify exact APR + cap in-app.' },
+  { provider: 'MEXC',    product: 'MEXC Savings — USDT (Promo)',  type: 'cex', currency: 'USD', stablecoin: 'USDT', rateType: 'Promo',    rateCondition: 'Flexible', apy: 8.00, validity: 'Promo / campaign', maxCap: 0, maxCapText: 'Quota-limited',         rateAfterCap: 0, link: 'https://www.mexc.com/earn',      notes: 'High promo APYs are typically capped and time-bound.' },
+  { provider: 'OKX',     product: 'OKX Earn — USDC',              type: 'cex', currency: 'USD', stablecoin: 'USDC', rateType: 'Variable', rateCondition: 'Flexible', apy: 6.00, validity: 'Ongoing',         maxCap: 0, maxCapText: 'Tiered/capped',         rateAfterCap: 0, link: 'https://www.okx.com/earn/simple-earn',   notes: 'Higher tiers may require holding OKB, VIP volume, or limited promo enrollment.' },
+  { provider: 'Gate.io', product: 'Gate Simple Earn — USDC',      type: 'cex', currency: 'USD', stablecoin: 'USDC', rateType: 'Variable', rateCondition: 'Flexible', apy: 5.85, validity: 'Ongoing',         maxCap: 0, maxCapText: 'Tiered/capped',         rateAfterCap: 0, link: 'https://www.gate.com/simple-earn',       notes: 'Rate varies by product; may be tiered and limited by quota.' },
+  { provider: 'Gate.io', product: 'Gate.io Earn — USDT (Locked)', type: 'cex', currency: 'USD', stablecoin: 'USDT', rateType: 'Variable', rateCondition: 'Locked',   apy: 5.85, validity: 'Ongoing',         maxCap: 0, maxCapText: 'Tiered/capped',         rateAfterCap: 0, link: 'https://www.gate.com/simple-earn',       notes: 'Requires lockup term; early redemption may be unavailable or penalized.' },
+  { provider: 'OKX',     product: 'OKX Earn — USDT',              type: 'cex', currency: 'USD', stablecoin: 'USDT', rateType: 'Variable', rateCondition: 'Flexible', apy: 4.00, validity: 'Ongoing',         maxCap: 0, maxCapText: 'Tiered/capped',         rateAfterCap: 0, link: 'https://www.okx.com/earn/simple-earn',   notes: 'USDT rates often tiered; confirm cap + effective blended APY.' },
+  { provider: 'Binance', product: 'Simple Earn — USDT',           type: 'cex', currency: 'USD', stablecoin: 'USDT', rateType: 'Variable', rateCondition: 'Flexible', apy: 4.00, validity: 'Ongoing',         maxCap: 0, maxCapText: 'Tiered (first tranche)', rateAfterCap: 0, link: 'https://www.binance.com/en/simple-earn', notes: 'Boosted APY usually applies only to first tier.' },
+  { provider: 'Bybit',   product: 'Bybit Earn — USDC',            type: 'cex', currency: 'USD', stablecoin: 'USDC', rateType: 'Fixed',    rateCondition: 'Flexible', apy: 3.80, validity: 'Ongoing',         maxCap: 0, maxCapText: 'Capped per tier',       rateAfterCap: 0, link: 'https://www.bybit.com/en/earn/savings',  notes: 'Bonus APY may require platform tasks; promos vary by region.' },
+  { provider: 'Binance', product: 'Simple Earn — USDC',           type: 'cex', currency: 'USD', stablecoin: 'USDC', rateType: 'Variable', rateCondition: 'Flexible', apy: 3.50, validity: 'Ongoing',         maxCap: 0, maxCapText: 'Tiered (first tranche)', rateAfterCap: 0, link: 'https://www.binance.com/en/simple-earn', notes: 'Top APR often applies only to a small first tier.' },
+  { provider: 'Bybit',   product: 'Bybit Easy Earn — USDT',       type: 'cex', currency: 'USD', stablecoin: 'USDT', rateType: 'Variable', rateCondition: 'Flexible', apy: 3.00, validity: 'Ongoing',         maxCap: 0, maxCapText: 'Capped per tier',       rateAfterCap: 0, link: 'https://www.bybit.com/en/earn/savings',  notes: 'Boosters/tasks may apply; region-dependent.' },
+  { provider: 'Bitget',  product: 'Bitget Simple Earn — USDC',    type: 'cex', currency: 'USD', stablecoin: 'USDC', rateType: 'Variable', rateCondition: 'Flexible', apy: 1.36, validity: 'Ongoing',         maxCap: 0, maxCapText: 'No featured cap',       rateAfterCap: 0, link: 'https://www.bitget.com/earn/savings',    notes: 'APR can vary by tier/VIP/promos.' },
+  { provider: 'Bitget',  product: 'Bitget Earn — USDT',           type: 'cex', currency: 'USD', stablecoin: 'USDT', rateType: 'Variable', rateCondition: 'Flexible', apy: 1.08, validity: 'Ongoing',         maxCap: 0, maxCapText: 'No featured cap',       rateAfterCap: 0, link: 'https://www.bitget.com/earn/savings',    notes: 'Promo/boost may require enrollment; tiers depend on balance.' },
+];
+
+// ═══════════ DEX TARGETS (resolved live from DefiLlama) ═══════════
+const DEX_TARGETS = [
+  { provider: 'Aave',      productName: 'Aave v3 Supply',      project: 'aave-v3',      symbol: 'USDC', chain: 'Ethereum', link: 'https://app.aave.com/' },
+  { provider: 'Aave',      productName: 'Aave v3 Supply',      project: 'aave-v3',      symbol: 'USDT', chain: 'Ethereum', link: 'https://app.aave.com/' },
+  { provider: 'Compound',  productName: 'Compound v3 Supply',  project: 'compound-v3',  symbol: 'USDC', chain: 'Ethereum', link: 'https://app.compound.finance/?market=usdc-mainnet' },
+  { provider: 'Compound',  productName: 'Compound v3 Supply',  project: 'compound-v3',  symbol: 'USDT', chain: 'Ethereum', link: 'https://app.compound.finance/?market=usdt-mainnet' },
+  { provider: 'Kamino',    productName: 'Kamino Lend',         project: 'kamino-lend',  symbol: 'USDC', chain: 'Solana',   link: 'https://app.kamino.finance/lending' },
+  { provider: 'Kamino',    productName: 'Kamino Lend',         project: 'kamino-lend',  symbol: 'USDT', chain: 'Solana',   link: 'https://app.kamino.finance/lending' },
+  { provider: 'Jupiter',   productName: 'Jupiter Lend',        project: 'jupiter-lend', symbol: 'USDC', chain: 'Solana',   link: 'https://jup.ag/lend' },
+  { provider: 'Jupiter',   productName: 'Jupiter Lend',        project: 'jupiter-lend', symbol: 'USDT', chain: 'Solana',   link: 'https://jup.ag/lend' },
+  { provider: 'Loopscale', productName: 'Loopscale Lending',   project: 'loopscale',    symbol: 'USDC', chain: 'Solana',   link: 'https://app.loopscale.com/' },
+  { provider: 'Loopscale', productName: 'Loopscale Lending',   project: 'loopscale',    symbol: 'USDT', chain: 'Solana',   link: 'https://app.loopscale.com/' },
+];
+
+// ═══════════ FETCH DEX DATA (live from DefiLlama) ═══════════
+async function fetchDexData() {
+  const cacheKey = 'trDexData2';
+  const cacheTimeKey = 'trDexData2Time';
+  const cached = localStorage.getItem(cacheKey);
+  const cachedTime = localStorage.getItem(cacheTimeKey);
+
+  if (cached && cachedTime && (Date.now() - parseInt(cachedTime)) < 30 * 60 * 1000) {
+    return JSON.parse(cached);
+  }
+
+  try {
+    const res = await fetch('https://yields.llama.fi/pools');
+    const json = await res.json();
+    const pools = json.data || [];
+
+    const result = DEX_TARGETS.map(t => {
+      const matches = pools
+        .filter(p => p.project === t.project && p.chain === t.chain && p.symbol === t.symbol)
+        .sort((a, b) => (b.tvlUsd || 0) - (a.tvlUsd || 0));
+      const top = matches[0];
+      if (!top) return null;
+      const apy = Math.round((top.apy || 0) * 100) / 100;
+      const apyBase = top.apyBase != null ? Math.round(top.apyBase * 100) / 100 : null;
+      const apyReward = top.apyReward != null ? Math.round(top.apyReward * 100) / 100 : null;
+      const tvlM = (top.tvlUsd || 0) / 1e6;
+      const breakdown = (apyBase != null && apyReward != null && apyReward > 0)
+        ? ` (base ${apyBase.toFixed(2)}% + rewards ${apyReward.toFixed(2)}%)`
+        : '';
+      return {
+        provider: t.provider,
+        product: `${t.productName} — ${t.symbol} (${t.chain})`,
+        type: 'dex',
+        currency: 'USD',
+        stablecoin: t.symbol,
+        rateType: 'Variable',
+        rateCondition: 'Variable APY',
+        apy: apy,
+        validity: 'Live',
+        maxCap: 0,
+        maxCapText: tvlM >= 1 ? `TVL: $${tvlM.toFixed(1)}M` : `TVL: $${(tvlM * 1000).toFixed(0)}K`,
+        rateAfterCap: 0,
+        link: t.link,
+        notes: `Live from DefiLlama${breakdown}. APY varies with pool utilization and reward incentives.`,
+      };
+    }).filter(Boolean);
+
+    localStorage.setItem(cacheKey, JSON.stringify(result));
+    localStorage.setItem(cacheTimeKey, Date.now().toString());
+    return result;
+  } catch (err) {
+    console.error('Failed to fetch DefiLlama yields:', err);
+    if (cached) return JSON.parse(cached);
+    return [];
+  }
+}
+
+// ═══════════ HELPERS ═══════════
+function getCurrencySymbol(d) { return d && d.currency === 'USD' ? '$' : '₱'; }
+function getTypeLabel(t) {
+  if (t === 'traditional') return 'Trad. Bank';
+  if (t === 'digital')     return 'Digital Bank';
+  if (t === 'cex')         return 'CEX';
+  if (t === 'dex')         return 'DEX';
+  return 'Crypto';
+}
 
 function getLogoPath(providerName) {
   const name = providerName.toLowerCase();
@@ -841,14 +949,20 @@ function renderTable(data) {
   empty.style.display = 'none';
 
   tbody.innerHTML = data.map((d, i) => {
-    const initials = d.provider.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
+    const initials = d.provider.split(/[\s.]+/).map(w => w[0]).filter(Boolean).join('').slice(0, 2).toUpperCase();
     const logo = getLogoPath(d.provider);
     const logoHTML = logo ? `<img src="${logo}" alt="${d.provider}">` : initials;
-    const typeLabel = d.type === 'traditional' ? 'Trad. Bank' : d.type === 'digital' ? 'Digital Bank' : 'Crypto';
+    const typeLabel = getTypeLabel(d.type);
+    const ccy = getCurrencySymbol(d);
     const providerLink = d.link ? `<a href="${d.link}" target="_blank" class="provider-name">${d.provider}</a>` : `<span class="provider-name">${d.provider}</span>`;
     const apyDisplay = d.apy > 0 ? `${d.apy.toFixed(2)}%` : '<span style="color:var(--text-dim)">—</span>';
-    const capDisplay = d.maxCap > 0 ? `₱${d.maxCap.toLocaleString()}` : '—';
-    const condClass = d.rateCondition.includes('fixed') ? ' flexible' : '';
+    const capDisplay = d.maxCap > 0 ? `${ccy}${d.maxCap.toLocaleString()}` : (d.maxCapText || '—');
+    const condLc = (d.rateCondition || '').toLowerCase();
+    const condClass = (condLc.includes('fixed') || condLc.includes('flexible')) ? ' flexible' : '';
+    const catLabel = (d.type === 'cex' || d.type === 'dex') ? d.type.toUpperCase() : d.type;
+    const detailsCell = d.link
+      ? `<a href="${d.link}" target="_blank" style="color:var(--gold); font-size:0.75rem; text-decoration:none;">View ↗</a>`
+      : (d.notes ? `<span title="${(d.notes || '').replace(/"/g, '&quot;')}" style="color:var(--text-dim); font-size:0.75rem; cursor:help;">Info ⓘ</span>` : '—');
 
     return `<tr>
       <td style="color:var(--text-dim); font-size:0.78rem;">${i + 1}</td>
@@ -866,8 +980,8 @@ function renderTable(data) {
       <td class="apy-cell">${apyDisplay}</td>
       <td style="color:var(--text-dim); font-size:0.78rem;">${d.validity || '—'}</td>
       <td style="color:var(--text-dim); font-size:0.75rem; white-space:normal; overflow:visible;">${capDisplay}</td>
-      <td style="color:var(--text-dim); font-size:0.78rem; text-transform:capitalize;">${d.type}</td>
-      <td>${d.link ? `<a href="${d.link}" target="_blank" style="color:var(--gold); font-size:0.75rem; text-decoration:none;">View ↗</a>` : '—'}</td>
+      <td style="color:var(--text-dim); font-size:0.78rem; text-transform:capitalize;">${catLabel}</td>
+      <td>${detailsCell}</td>
     </tr>`;
   }).join('');
 }
@@ -892,7 +1006,10 @@ function renderTopCards(data) {
   const top3 = [...data].filter(d => d.apy > 0).sort((a, b) => b.apy - a.apy).slice(0, 3);
   const labels = ['Top Yield', '2nd Best', '3rd Best'];
   document.getElementById('topYields').innerHTML = top3.map((d, i) => {
-    const typeLabel = d.type === 'traditional' ? 'Traditional Bank' : d.type === 'digital' ? 'Digital Bank' : 'Crypto';
+    const typeLabel = d.type === 'traditional' ? 'Traditional Bank' :
+                      d.type === 'digital'     ? 'Digital Bank' :
+                      d.type === 'cex'         ? 'CEX' :
+                      d.type === 'dex'         ? 'DEX' : 'Crypto';
     return `<div class="top-card">
       <div class="top-card-rank">${labels[i]}</div>
       <div class="top-card-provider">${d.provider}</div>
@@ -937,7 +1054,9 @@ function populateCalcProviders(data) {
       product: d.product,
       validity: d.validity || '',
       maxCap: d.maxCap > 0 ? d.maxCap : 0,
+      maxCapText: d.maxCapText || '',
       rateAfterCap: d.rateAfterCap || 0,
+      currency: d.currency || 'PHP',
     };
   });
   renderCalcDropdown('');
@@ -970,6 +1089,7 @@ function updateCalc() {
   const meta = calcProviderMeta[provKey];
   const maxCap = meta ? meta.maxCap : 0;
   const rateAfterCap = meta ? meta.rateAfterCap / 100 : 0;
+  const ccy = meta && meta.currency === 'USD' ? '$' : '₱';
 
   let balance, yearOneEarning;
   if (maxCap > 0 && deposit > maxCap) {
@@ -984,16 +1104,16 @@ function updateCalc() {
   }
   const profit = balance - deposit;
 
-  document.getElementById('resultBalance').textContent = '₱' + formatNum(balance);
+  document.getElementById('resultBalance').textContent = ccy + formatNum(balance);
   document.getElementById('resultBalanceSub').textContent = `After ${years} Year${years > 1 ? 's' : ''}`;
-  document.getElementById('resultProfit').textContent = '+₱' + formatNum(profit);
+  document.getElementById('resultProfit').textContent = '+' + ccy + formatNum(profit);
 
-  document.getElementById('breakDaily').textContent = '₱' + formatNum(yearOneEarning / 365);
-  document.getElementById('breakWeekly').textContent = '₱' + formatNum(yearOneEarning / 52);
-  document.getElementById('breakMonthly').textContent = '₱' + formatNum(yearOneEarning / 12);
-  document.getElementById('breakAnnually').textContent = '₱' + formatNum(yearOneEarning);
+  document.getElementById('breakDaily').textContent = ccy + formatNum(yearOneEarning / 365);
+  document.getElementById('breakWeekly').textContent = ccy + formatNum(yearOneEarning / 52);
+  document.getElementById('breakMonthly').textContent = ccy + formatNum(yearOneEarning / 12);
+  document.getElementById('breakAnnually').textContent = ccy + formatNum(yearOneEarning);
 
-  document.getElementById('calcDepositLabel').textContent = '₱' + deposit.toLocaleString();
+  document.getElementById('calcDepositLabel').textContent = ccy + deposit.toLocaleString();
   document.getElementById('calcApyLabel').textContent = apy + '%';
   document.getElementById('calcDurationLabel').textContent = years + ' Year' + (years > 1 ? 's' : '');
 
@@ -1133,12 +1253,6 @@ function drawChart(deposit, rate, years) {
 // ═══════════ FILTER & SEARCH ═══════════
 function applyFilterAndSearch() {
   const emptyMsg = document.getElementById('emptyMsg');
-  if (currentFilter === 'crypto') {
-    document.getElementById('yieldTable').style.display = 'none';
-    document.getElementById('emptyState').style.display = 'block';
-    emptyMsg.innerHTML = '<span style="color:var(--gold); font-weight:600; font-size:1.1rem;">Coming Soon</span><br><span style="color:var(--text-dim); font-size:0.9rem;">We\'re gathering crypto yield data. Stay tuned!</span>';
-    return;
-  }
   emptyMsg.textContent = 'No providers match your search.';
   const search = document.getElementById('searchInput').value.toLowerCase();
   filteredData = allData.filter(d => {
@@ -1221,6 +1335,7 @@ function setupEvents() {
     const disclaimer = document.getElementById('calcDisclaimer');
     if (key !== 'custom' && calcProviderMeta[key]) {
       const meta = calcProviderMeta[key];
+      const ccy = meta.currency === 'USD' ? '$' : '₱';
       ddBtn.textContent = `${meta.provider} (${meta.product}) — ${meta.apy}%`;
       calcApy.value = meta.apy;
       calcApySlider.value = meta.apy;
@@ -1230,7 +1345,9 @@ function setupEvents() {
         warnings.push(`⚠ Variable rate — up to ${meta.apy}% (${meta.condition}). Actual rate may be lower depending on conditions${meta.validity ? ' · ' + meta.validity : ''}.`);
       }
       if (meta.maxCap > 0) {
-        warnings.push(`⚠ Max cap: ₱${meta.maxCap.toLocaleString()}. Deposits above this earn ${meta.rateAfterCap > 0 ? meta.rateAfterCap.toFixed(2) + '%' : 'a lower rate'}.`);
+        warnings.push(`⚠ Max cap: ${ccy}${meta.maxCap.toLocaleString()}. Deposits above this earn ${meta.rateAfterCap > 0 ? meta.rateAfterCap.toFixed(2) + '%' : 'a lower rate'}.`);
+      } else if (meta.maxCapText) {
+        warnings.push(`⚠ Cap: ${meta.maxCapText}.`);
       }
       if (warnings.length) {
         disclaimer.textContent = warnings.join(' ');
@@ -1276,8 +1393,13 @@ async function init() {
   setupEvents();
   setupReveals();
 
-  const sheetData = await fetchSheetData();
-  allData = sheetData;
+  const [sheetData, dexData] = await Promise.all([fetchSheetData(), fetchDexData()]);
+  // Tag sheet data with PHP currency if missing (banks default; CEX rows in sheet should set "USD")
+  sheetData.forEach(d => { if (!d.currency || d.currency === 'PHP') d.currency = (d.type === 'cex' || d.type === 'dex') ? 'USD' : 'PHP'; });
+  // Sheet is authoritative: only fall back to hardcoded CEX if the sheet has no CEX rows yet
+  const sheetHasCEX = sheetData.some(d => d.type === 'cex');
+  const cexEntries = sheetHasCEX ? [] : CEX_DATA;
+  allData = [...sheetData, ...cexEntries, ...dexData];
   filteredData = sortData(allData, 'apy', 'desc');
 
   renderTable(filteredData);
@@ -1286,9 +1408,7 @@ async function init() {
   populateCalcProviders(allData);
   updateCalc();
 
-  // Data status
-  const statusEl = document.getElementById('dataStatus');
-  statusEl.innerHTML = '';
+  document.getElementById('dataStatus').innerHTML = '';
 }
 
 init();
