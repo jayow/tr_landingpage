@@ -385,6 +385,37 @@
       position: absolute; inset: 0; width: 100%; height: 100%; border: none;
     }
 
+    /* ─── PROGRAM CARD WITH BANNER ─── */
+    .program-visual { position: relative; width: 100%; background: #0a0a0d; overflow: hidden; }
+    .program-visual img {
+      display: block; width: 100%;
+      height: clamp(300px, 34vw, 420px);
+      object-fit: cover; object-position: center;
+    }
+    .program-visual::after {
+      content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 72px;
+      background: linear-gradient(to bottom, rgba(22,22,30,0), var(--card-solid));
+      pointer-events: none;
+    }
+    .program-price {
+      display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-top: 22px;
+    }
+    .program-price .now {
+      font-family: var(--font-display); font-size: 1.7rem; font-weight: 800; color: var(--gold);
+    }
+    .program-price .was { font-size: 1rem; color: var(--dim); text-decoration: line-through; }
+    .program-price .save {
+      font-size: 0.65rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em;
+      padding: 4px 10px; border-radius: var(--radius-pill);
+      background: rgba(76,175,80,0.15); color: #66bb6a;
+    }
+    .program-tags { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 14px; }
+    .program-tags .program-tag { margin-bottom: 0; }
+    .program-tag.max { background: var(--gold); color: #000; }
+    @media (max-width: 768px) {
+      .program-visual img { height: clamp(220px, 56vw, 340px); }
+    }
+
     /* ─── MODULES GRID ─── */
     .modules-grid {
       display: grid; grid-template-columns: repeat(5, 1fr);
@@ -1135,80 +1166,160 @@
       </div>
     </div>
 
-    <!-- Wealth Builder -->
+    <!-- Technical Intensive (standard) -->
     <div class="program-card reveal-scale">
-      <div class="program-card-inner">
-        <div class="program-num">03</div>
-        <div class="program-header">
-          <div class="program-header-left">
-            <div class="program-tag">Bundle</div>
-            <h3>Wealth Builder</h3>
-          </div>
-        </div>
-        <p class="text-body">Enhance your skills with Wealth Builder. Includes the 2 best-selling courses of ZFT:</p>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:24px">
-          <div style="padding:24px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm)">
-            <h4 style="font-size:0.9rem;margin-bottom:8px">Technical Intensive</h4>
-            <p class="text-sm">The premium and best-selling ZFT course. Master the art of technical trading using the tried and tested ZFT system for all markets — WEBS, PSE, US, Forex.</p>
-          </div>
-          <div style="padding:24px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm)">
-            <h4 style="font-size:0.9rem;margin-bottom:8px">WEB3 Masterclass</h4>
-            <p class="text-sm">The ultimate course on how to make magic Internet money.</p>
-          </div>
-        </div>
+      <div class="program-visual">
+        <img src="programs/technical-intensive.jpg" alt="Technical Intensive" loading="lazy">
       </div>
-    </div>
-
-    <!-- TI -->
-    <div class="program-card reveal-scale">
       <div class="program-card-inner">
-        <div class="program-num">04</div>
-        <div class="program-header">
-          <div class="program-header-left">
-            <div class="program-tag">Course</div>
-            <h3>Technical Intensive [TI]</h3>
-          </div>
-          <a href="#" class="btn btn-outline">Enroll Now →</a>
+        <div class="program-tag">Course</div>
+        <h3>Technical Intensive</h3>
+        <p class="text-body">ZFT's premiere technical analysis workshop — 30+ hours of live online sessions built to accelerate your mastery of the market-tested ZFT trading system. Includes focused-group mentorship, practical worksheets, an accountability buddy, and access to all premium course modules.</p>
+        <div class="program-price">
+          <span class="now">₱14,999</span>
+          <span class="was">₱32,000</span>
+          <span class="save">Save ₱17,001</span>
         </div>
-        <p class="text-body">ZFT's premiere technical analysis workshop. 50+ hours of live online sessions over 4 weeks. Master ZFT's market-tested trading system, optimize entries and exits, learn risk management, and build emotional resilience.</p>
         <div class="program-meta">
-          <div class="meta-item">Duration<strong>2 Months</strong></div>
-          <div class="meta-item">Hours<strong>50+</strong></div>
+          <div class="meta-item">Content<strong>30+ Hours Live</strong></div>
+          <div class="meta-item">Format<strong>Focused-Group Mentorship</strong></div>
           <div class="meta-item">Level<strong>Beginner–Intermediate</strong></div>
-          <div class="meta-item">Price<strong>₱25,999</strong></div>
         </div>
-        <div class="modules-grid">
-          <div class="module-chip"><div class="module-num">01</div><div class="module-name">Mindset</div></div>
-          <div class="module-chip"><div class="module-num">02</div><div class="module-name">Psychology</div></div>
-          <div class="module-chip"><div class="module-num">03</div><div class="module-name">Darvas</div></div>
-          <div class="module-chip"><div class="module-num">04</div><div class="module-name">Moving Avg</div></div>
-          <div class="module-chip"><div class="module-num">05</div><div class="module-name">Fibonacci</div></div>
-          <div class="module-chip"><div class="module-num">06</div><div class="module-name">RSI</div></div>
-          <div class="module-chip"><div class="module-num">07</div><div class="module-name">Risk Mgmt</div></div>
-          <div class="module-chip"><div class="module-num">08</div><div class="module-name">Consolidation</div></div>
-          <div class="module-chip"><div class="module-num">09</div><div class="module-name">Backtesting</div></div>
-          <div class="module-chip"><div class="module-num">10</div><div class="module-name">Probabilities</div></div>
+        <div class="btn-row" style="margin-top:28px">
+          <a href="https://shop.tradingrepublic.io/products/technical-intensive" target="_blank" class="btn btn-gold">Enroll Now →</a>
         </div>
-        <p class="text-sm mt-24"><strong style="color:var(--white)">Schedule:</strong> Main sessions Mon/Wed/Fri 8–11PM PHT · Q&A Tue/Thu/Sat 8PM+ PHT</p>
-        <p class="text-sm">Includes session recordings, live consultations with coaches and 3-month TR community access.</p>
       </div>
     </div>
 
-    <!-- WEB3 Masterclass -->
+    <!-- Technical Intensive MAX -->
     <div class="program-card reveal-scale">
+      <div class="program-visual">
+        <img src="programs/technical-intensive-max.jpg" alt="Technical Intensive MAX" loading="lazy">
+      </div>
       <div class="program-card-inner">
-        <div class="program-num">05</div>
-        <div class="program-header">
-          <div class="program-header-left">
-            <div class="program-tag">Course</div>
-            <h3>WEB3 Masterclass</h3>
-          </div>
-          <a href="https://shop.tradingrepublic.io/products/crypto-masterclass" target="_blank" class="btn btn-gold">Enroll Now →</a>
+        <div class="program-tags">
+          <div class="program-tag">Course</div>
+          <div class="program-tag max">MAX · + Subscription</div>
         </div>
-        <p class="text-body">Discover the latest strategies and the newest WEB3 opportunities this 2026. Includes the most sought-after course from Zeefreaks — Liquidity Mining Masterclass.</p>
-        <p class="text-body mt-16">Learn expert-level portfolio allocation, risk management and investment mindset from veteran ZFT coaches and Zeefreaks himself.</p>
+        <h3>Technical Intensive MAX</h3>
+        <p class="text-body">Everything in Technical Intensive — now 50+ hours of live sessions including full Q&A — bundled with a one-year Trading Republic subscription. Get unlimited Q&A with coaches and mentors, all checkpoint sessions, exclusive webinars, and community giveaways.</p>
+        <div class="program-price">
+          <span class="now">₱24,999</span>
+          <span class="was">₱32,000</span>
+          <span class="save">Save ₱7,001</span>
+        </div>
         <div class="program-meta">
-          <div class="meta-item">Price<strong>₱29,999</strong></div>
+          <div class="meta-item">Content<strong>50+ Hours Live + Q&A</strong></div>
+          <div class="meta-item">Includes<strong>1-Year TR Subscription</strong></div>
+          <div class="meta-item">Level<strong>Beginner–Intermediate</strong></div>
+        </div>
+        <div class="btn-row" style="margin-top:28px">
+          <a href="https://shop.tradingrepublic.io/products/technical-intensive-max" target="_blank" class="btn btn-gold">Enroll Now →</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- WEB3 Masterclass (standard) -->
+    <div class="program-card reveal-scale">
+      <div class="program-visual">
+        <img src="programs/web3-masterclass.jpg" alt="WEB3 Masterclass" loading="lazy">
+      </div>
+      <div class="program-card-inner">
+        <div class="program-tag">Course</div>
+        <h3>WEB3 Masterclass</h3>
+        <p class="text-body">Master the world of Web3 — NFTs, DeFi, liquidity mining, and the newest protocols and opportunities. Learn portfolio allocation, risk management, and how to spot scams from veteran ZFT portfolio managers, with flexible access to live sessions and recordings.</p>
+        <div class="program-price">
+          <span class="now">₱14,999</span>
+          <span class="was">₱35,000</span>
+          <span class="save">Save ₱20,001</span>
+        </div>
+        <div class="program-meta">
+          <div class="meta-item">Focus<strong>Web3 · NFTs · DeFi</strong></div>
+          <div class="meta-item">Access<strong>Live + Recordings</strong></div>
+          <div class="meta-item">Level<strong>Beginner–Intermediate</strong></div>
+        </div>
+        <div class="btn-row" style="margin-top:28px">
+          <a href="https://shop.tradingrepublic.io/products/web3-masterclass" target="_blank" class="btn btn-gold">Enroll Now →</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- WEB3 Masterclass MAX -->
+    <div class="program-card reveal-scale">
+      <div class="program-visual">
+        <img src="programs/web3-masterclass-max.jpg" alt="WEB3 Masterclass MAX" loading="lazy">
+      </div>
+      <div class="program-card-inner">
+        <div class="program-tags">
+          <div class="program-tag">Course</div>
+          <div class="program-tag max">MAX · + Subscription</div>
+        </div>
+        <h3>WEB3 Masterclass MAX</h3>
+        <p class="text-body">The full WEB3 Masterclass — Web3, NFTs, DeFi, and emerging protocols — bundled with a one-year Trading Republic subscription. Unlimited Q&A with mentors, checkpoint sessions, exclusive webinars, and giveaways.</p>
+        <div class="program-price">
+          <span class="now">₱24,999</span>
+          <span class="was">₱35,000</span>
+          <span class="save">Save ₱10,001</span>
+        </div>
+        <div class="program-meta">
+          <div class="meta-item">Focus<strong>Web3 · NFTs · DeFi</strong></div>
+          <div class="meta-item">Includes<strong>1-Year TR Subscription</strong></div>
+          <div class="meta-item">Level<strong>Beginner–Intermediate</strong></div>
+        </div>
+        <div class="btn-row" style="margin-top:28px">
+          <a href="https://shop.tradingrepublic.io/products/web3-masterclass-max" target="_blank" class="btn btn-gold">Enroll Now →</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Wealth Builder (standard) -->
+    <div class="program-card reveal-scale">
+      <div class="program-visual">
+        <img src="programs/wealth-builder.jpg" alt="Wealth Builder" loading="lazy">
+      </div>
+      <div class="program-card-inner">
+        <div class="program-tag">Bundle</div>
+        <h3>Wealth Builder</h3>
+        <p class="text-body">ZFT's two best-selling courses in one — Technical Intensive and WEB3 Masterclass. Build one complete wealth-building education across the PSE, US markets, Web3, and Forex.</p>
+        <div class="program-price">
+          <span class="now">₱27,999</span>
+          <span class="was">₱70,000</span>
+          <span class="save">Save ₱42,001</span>
+        </div>
+        <div class="program-meta">
+          <div class="meta-item">Includes<strong>TI + WEB3 Masterclass</strong></div>
+          <div class="meta-item">Markets<strong>PSE · US · Web3 · Forex</strong></div>
+        </div>
+        <div class="btn-row" style="margin-top:28px">
+          <a href="https://shop.tradingrepublic.io/products/wealth-builder" target="_blank" class="btn btn-gold">Enroll Now →</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Wealth Builder MAX -->
+    <div class="program-card reveal-scale">
+      <div class="program-visual">
+        <img src="programs/wealth-builder-max.jpg" alt="Wealth Builder MAX" loading="lazy">
+      </div>
+      <div class="program-card-inner">
+        <div class="program-tags">
+          <div class="program-tag">Bundle</div>
+          <div class="program-tag max">MAX · + Membership</div>
+        </div>
+        <h3>Wealth Builder MAX</h3>
+        <p class="text-body">Everything in Wealth Builder — Technical Intensive and WEB3 Masterclass — plus a two-year Trading Republic community membership. Includes unlimited coach access, all Q&A and checkpoint sessions, exclusive webinars, merch, and giveaways.</p>
+        <div class="program-price">
+          <span class="now">₱44,999</span>
+          <span class="was">₱70,000</span>
+          <span class="save">Save ₱25,001</span>
+        </div>
+        <div class="program-meta">
+          <div class="meta-item">Includes<strong>TI + WEB3 Masterclass</strong></div>
+          <div class="meta-item">Membership<strong>2-Year TR Community</strong></div>
+          <div class="meta-item">Markets<strong>PSE · US · Web3 · Forex</strong></div>
+        </div>
+        <div class="btn-row" style="margin-top:28px">
+          <a href="https://shop.tradingrepublic.io/products/wealth-builder-max" target="_blank" class="btn btn-gold">Enroll Now →</a>
         </div>
       </div>
     </div>
